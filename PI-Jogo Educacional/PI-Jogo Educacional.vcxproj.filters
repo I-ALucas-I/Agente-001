@@ -27,10 +27,10 @@
     <ClCompile Include="Player.c">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="FileName.cpp">
+    <ClCompile Include="Background.c">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="Background.c">
+    <ClCompile Include="Collision.c">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
   </ItemGroup>
@@ -39,6 +39,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Background.h">
+      <Filter>Arquivos de Origem</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
       <Filter>Arquivos de Origem</Filter>
     </ClInclude>
   </ItemGroup>

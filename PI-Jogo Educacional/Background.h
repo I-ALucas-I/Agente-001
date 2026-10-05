@@ -4,10 +4,14 @@
 void background(int *larguraTela, int *alturaTela);
 
 typedef struct {
-	int x; 
-	int standable;
+	int x;
+	int y;
+	int largura;
+	int altura;
+	int tipo;
+	int solid;
 }Platform;
 
-int platform(int* larguraTela, int* alturaTela, int gridY, int gridX, int quantosX, int quantosY, Platform* pl);
-
+Platform platform(int* larguraTela, int* alturaTela, int gridY, int gridX, int quantosX, int quantosY, Platform* pl);
+void platformDraw(Platform* pl);
 #endif

@@ -1,7 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
-
 #include <stdlib.h>
-#include <stdio.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
@@ -9,6 +6,7 @@
 #include <allegro5/mouse.h>
 #include "Player.h"
 #include "Background.h"
+#include "Collision.h"
 
 int main() {
 
@@ -21,7 +19,7 @@ int main() {
 
     //Criando janela do jogo
 
-    al_set_new_display_flags(ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE);
+    al_set_new_display_flags(ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE /* | ALLEGRO_MAXIMIZED */ );
 
     ALLEGRO_DISPLAY* window;
     
@@ -44,11 +42,12 @@ int main() {
     ALLEGRO_EVENT_QUEUE* eventQueue;
     eventQueue = al_create_event_queue();
 
-    //al_set_new_display_refresh_rate(30);
+    ALLEGRO_TIMER* timer;
+    timer = al_create_timer(1.0 / 30.0);
 
     //Verifica se a janela e a fila de eventos foi criada, se passar começa o código principal
 
-    if (window == NULL || eventQueue == NULL) {
+    if (window == NULL || eventQueue == NULL || timer == NULL) {
         return -1;
     }
     else {
@@ -56,8 +55,11 @@ int main() {
         //Assoiciando fila de eventos a tipos de evento
 
         al_register_event_source(eventQueue, al_get_display_event_source(window));
+        al_register_event_source(eventQueue, al_get_timer_event_source(timer));
         al_register_event_source(eventQueue, al_get_keyboard_event_source());
         al_register_event_source(eventQueue, al_get_mouse_event_source());
+
+        al_start_timer(timer);
 
         //Liga o looping do jogo
 
@@ -91,73 +93,135 @@ int main() {
         //                                   |
         //                                   V
         //
-        jogador.x = ((larguraTela/90) * 3) * 1 - ((larguraTela / 90) * 3);
+        jogador.x = ((larguraTela/90) * 3) * 3 - ((larguraTela / 90) * 3);
         jogador.y = ((alturaTela / 60) * 3) * 16 - ((alturaTela / 60) * 3);
-        jogador.velocidade = 10;
+        jogador.largura = (larguraTela / 90) * 3;
+        jogador.altura = (alturaTela / 60) * 3;
+        jogador.velocidade = 6;
+        jogador.velY = 0;
         jogador.standing = true;
-        jogador.keyboard.a_pressed = 0;
-        jogador.keyboard.d_pressed = 0;
-        jogador.keyboard.w_pressed = 0;
+        jogador.keyboard.a_pressed = false;
+        jogador.keyboard.d_pressed = false;
+        jogador.keyboard.w_pressed = false;
 
         //Ponteiro para chamar jogador nas functions
 
         Player* p = &jogador;
 
-        int mouseX, mouseY;
+        //Iniciando váriavel do jogador
+
+        Mouse mouse;
+
+        mouse.mouseX = larguraTela / 2;
+        mouse.mouseY = alturaTela / 2;
+        mouse.mouse.b_left = false;
+        mouse.mouse.b_right = false;
+
+        //Ponteiro para chamar mouse nas functions
+
+        Mouse* m = &mouse;
+
+        Shot shots[5];
+
+        Shot* s = &shots[4];
+
+        //Criando evento
+
+        ALLEGRO_EVENT event;
+
+        al_set_mouse_xy(window, mouse.mouseX, mouse.mouseY);
 
         //looping de jogo principal
 
         while (windowOn == true) {
-        
-            //Completando jogador
-
-            jogador.x2 = jogador.x + (larguraTela / 90) * 3;
-            jogador.y2 = jogador.y + (alturaTela / 60) * 3 *2;
 
             //Limpando janela para cor do fundo
 
             al_clear_to_color(fundo);
             
-            //Criando evento
-
-            ALLEGRO_EVENT event;
-            
             //Fazendo fila de eventos
 
             al_wait_for_event(eventQueue, &event);
             
-            //Chamando funtion de background/ grid
+            //Chamando funtion de background/grid
             
             background(lT, aT);
 
             //Criando variavel de plataforma e ponteiro para usar em functions
 
-            Platform plataforma1;
-            Platform* plataforma1P = &plataforma1;
-
-            plataforma1P->x = 0;
-            plataforma1P->standable = 0;
+            Platform plataforma;
+            plataforma.tipo = 0;
+            Platform* plataformaP = &plataforma;
 
             //Criando cenário com plataformas
 
-            platform(lT, aT, 1, 18, 30, 3, plataforma1P);
+            plataforma = platform(lT, aT, 1, 18, 30, 3, plataformaP);
 
-            plataforma1P->x = 1;
-            plataforma1P->standable = 1;
+            Platform plataforma1;
+            plataforma1.tipo = 1;
+            Platform* plataforma1P = &plataforma1;
 
-            //platform(lT, aT, 1, 1, 30, 17, plataforma1P);
+            plataforma1 = platform(lT, aT, 1, 1, 30, 17, plataforma1P);
 
-            plataforma1P->x = 2;
-            plataforma1P->standable = 0;
+            Platform plataforma2;
+            plataforma2.tipo = 2;
+            Platform* plataforma2P = &plataforma2;
 
-            platform(lT, aT, 11, 16, 5, 1, plataforma1P);
+            plataforma2 = platform(lT, aT, 11, 15, 5, 1, plataforma2P);
 
-            //Chamando function playerMove
+            Platform plataforma4;
+            plataforma4.tipo = 3;
+            Platform* plataforma4P = &plataforma4;
 
+            plataforma4 = platform(lT, aT, 21, 10, 5, 8, plataforma4P);
+
+            Platform plataforma5;
+            plataforma5.tipo = 3;
+            Platform* plataforma5P = &plataforma5;
+
+            plataforma5 = platform(lT, aT, 21, 9, 4, 1, plataforma5P);
+
+            Platform plataforma3;
+            plataforma3.tipo = 2;
+            Platform* plataforma3P = &plataforma3;
+
+            plataforma3 = platform(lT, aT, 19, 12, 5, 6, plataforma3P);
+
+            
+
+            //Chamando function playerMove e gun
+           
             playerMove(p, event);
+            gun(m, s, 4, p, event);
+            shot(s, 4, event);
 
-            mouseX = event.mouse.x;
-            mouseY = event.mouse.y;
+            //Atualizando colisão quando o timer atualiza
+
+            if (event.type == ALLEGRO_EVENT_TIMER) {
+
+                p->standing = false;
+
+                collision(p, plataformaP);
+                collision(p, plataforma1P);
+                collision(p, plataforma2P);
+                collision(p, plataforma3P);
+                collision(p, plataforma4P);
+                collision(p, plataforma5P);
+            }
+
+            //Desenhando plataformas
+
+            platformDraw(plataformaP);
+            platformDraw(plataforma1P);
+            platformDraw(plataforma2P);
+            platformDraw(plataforma4P);
+            platformDraw(plataforma5P);
+            platformDraw(plataforma3P);
+            
+            //Chamando function playerDraw e gunDraw
+
+            playerDraw(p);
+            gunDraw(m, s, 4, p);
 
             //Para fechar janela do allegro com ESC ou no 'X' da janela
 
@@ -172,9 +236,10 @@ int main() {
 
         //Destruindo criações do allegro
 
+        al_destroy_timer(timer);
         al_destroy_display(window);
         al_destroy_event_queue(eventQueue);
-        
+
         return 0;
     }
 }

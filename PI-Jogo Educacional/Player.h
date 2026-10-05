@@ -13,13 +13,47 @@ typedef struct {
 }KeyboardPressed;
 
 typedef struct {
-    int x, x2;
-    int y, y2;
+    
+    int x;
+    int y;
+    int largura;
+    int altura;
     int velocidade;
+    float velY;
     bool standing;
     KeyboardPressed keyboard;
+
 } Player;
 
-void playerMove(Player *p, ALLEGRO_EVENT event);
+typedef struct {
 
+    bool b_right;
+    bool b_left;
+
+}MousePressed;
+
+typedef struct {
+
+    int mouseX;
+    int mouseY;
+    int gunX;
+    int gunY;
+    MousePressed mouse;
+
+}Mouse;
+
+typedef struct {
+
+    int shotX;
+    int shotY;
+    float shotSpdX;
+    float shotSpdY;
+
+}Shot;
+
+void playerMove(Player* p, ALLEGRO_EVENT event);
+void playerDraw(Player* p);
+void gun(Mouse* m, Shot *s[], int quantos, Player* p, ALLEGRO_EVENT event);
+void shot(Shot *s[], int quantos, ALLEGRO_EVENT event);
+void gunDraw(Mouse* m, Shot *s[], int quantos, Player* p);
 #endif
