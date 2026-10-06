@@ -110,7 +110,7 @@ void gun(Mouse* m, Shot s[], int quantos, Player* p, ALLEGRO_EVENT event) {
 void shot(Shot s[], int quantos, ALLEGRO_EVENT event) {
     
     for (int i = 0; i < quantos; i++) {
-        if(s[i].active == true){
+        if(s[i].active == true && s[i].used == false){
             if (event.type == ALLEGRO_EVENT_TIMER) {
                 s[i].shotX += s[i].shotSpdX;
                 s[i].shotY += s[i].shotSpdY;
@@ -131,7 +131,7 @@ void gunDraw(Mouse* m, Shot s[], int quantos, Player* p) {
     
 
     for (int i = 0; i < quantos; i++) {
-        if (s[i].active == true) {
+        if (s[i].active == true && s[i].used == false) {
             al_draw_filled_circle(s[i].shotX, s[i].shotY, 6.5, al_map_rgb(0, 0, 255));
         }
     }

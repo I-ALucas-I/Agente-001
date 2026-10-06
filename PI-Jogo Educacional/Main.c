@@ -5,6 +5,7 @@
 #include <allegro5/keyboard.h>
 #include <allegro5/mouse.h>
 #include "Player.h"
+#include "Enemie.h"
 #include "Background.h"
 #include "Collision.h"
 
@@ -108,7 +109,25 @@ int main() {
 
         Player* p = &jogador;
 
-        //Iniciando váriavel do jogador
+        Enemie inimigo;
+        //                          coordenada na grid
+        // 
+        //                                   |
+        //                                   V
+        //
+        inimigo.x = ((larguraTela / 90) * 3) * 7 - ((larguraTela / 90) * 3);
+        inimigo.y = ((alturaTela / 60) * 3) * 17 - ((alturaTela / 60) * 3);
+        inimigo.largura = (larguraTela / 90) * 3;
+        inimigo.altura = (alturaTela / 60) * 3;
+        
+
+        //Ponteiro para chamar jogador nas functions
+
+        Enemie* e = &inimigo;
+
+        int mudar = 16;
+        int* mu = &mudar;
+        //Iniciando váriavel do mouse
 
         Mouse mouse;
 
@@ -127,6 +146,7 @@ int main() {
         for (int i = 0; i < quantos; i++) {
 
             shots[i].active = false;
+            shots[i].used = false;
         }
 
         Shot* s = &shots[0];
@@ -199,7 +219,7 @@ int main() {
            
             playerMove(p, event);
             gun(m, s, quantos, p, event);
-            shot(shots, quantos, event);
+            shot(s, quantos, event);
 
             //Atualizando colisão quando o timer atualiza
 
@@ -207,12 +227,14 @@ int main() {
 
                 p->standing = false;
 
-                collision(p, plataformaP);
-                collision(p, plataforma1P);
-                collision(p, plataforma2P);
-                collision(p, plataforma3P);
-                collision(p, plataforma4P);
-                collision(p, plataforma5P);
+                plataformCollision(p, plataformaP);
+                plataformCollision(p, plataforma1P);
+                plataformCollision(p, plataforma2P);
+                plataformCollision(p, plataforma3P);
+                plataformCollision(p, plataforma4P);
+                plataformCollision(p, plataforma5P);
+                enemieCollision(p, e);
+                enemieShotCollision(s, quantos, e, mu);
             }
 
             //Desenhando plataformas
@@ -227,13 +249,15 @@ int main() {
             //Chamando function playerDraw e gunDraw
 
             playerDraw(p);
-            gunDraw(m, shots, quantos, p);
+            gunDraw(m, s, quantos, p);
+            enemieDraw(e);
 
             if (event.type == ALLEGRO_EVENT_KEY_DOWN && event.keyboard.keycode == ALLEGRO_KEY_R) {
 
                 for (int i = 0; i < quantos; i++) {
 
                     shots[i].active = false;
+                    shots[i].used = false;
                 }
             }
 
