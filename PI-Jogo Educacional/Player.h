@@ -48,12 +48,13 @@ typedef struct {
     int shotY;
     float shotSpdX;
     float shotSpdY;
+    bool active;
 
 }Shot;
 
 void playerMove(Player* p, ALLEGRO_EVENT event);
 void playerDraw(Player* p);
-void gun(Mouse* m, Shot *s[], int quantos, Player* p, ALLEGRO_EVENT event);
-void shot(Shot *s[], int quantos, ALLEGRO_EVENT event);
-void gunDraw(Mouse* m, Shot *s[], int quantos, Player* p);
+void gun(Mouse* m, Shot* s, int quantos, Player* p, ALLEGRO_EVENT event);
+void shot(Shot s[], int quantos, ALLEGRO_EVENT event);
+void gunDraw(Mouse* m, Shot s[], int quantos, Player* p);
 #endif

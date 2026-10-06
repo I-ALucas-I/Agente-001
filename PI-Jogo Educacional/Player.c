@@ -55,7 +55,7 @@ void playerDraw(Player* p) {
 
 };
 
-void gun(Mouse* m, Shot *s[], int quantos, Player* p, ALLEGRO_EVENT event) {
+void gun(Mouse* m, Shot s[], int quantos, Player* p, ALLEGRO_EVENT event) {
 
     if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
         if (event.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT && m->mouse.b_left == false) {
@@ -69,13 +69,25 @@ void gun(Mouse* m, Shot *s[], int quantos, Player* p, ALLEGRO_EVENT event) {
     if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) {
         if (event.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT && m->mouse.b_left == true) {
             m->mouse.b_left = false;
-            s[quantos]->shotX = m->gunX;
-            s[quantos]->shotY = m->gunY;
+            
+            
+            
+            for (int i = 0; i < quantos; i++) {
+             
+                if (s[i].active == false) {
+                    s[i].shotX = m->gunX;
+                    s[i].shotY = m->gunY;
 
-            float shotAngle = atan2(m->mouseY - s[quantos]->shotY, m->mouseX - s[quantos]->shotX);
+                    float shotAngle = atan2(m->mouseY - s[i].shotY, m->mouseX - s[i].shotX);
 
-            s[quantos]->shotSpdX = cos(shotAngle) * 25;
-            s[quantos]->shotSpdY = sin(shotAngle) * 25;
+                    s[i].shotSpdX = cos(shotAngle) * 25;
+                    s[i].shotSpdY = sin(shotAngle) * 25;
+
+                    s[i].active = true;
+
+                    break;
+                }
+            }
         }
         if (event.mouse.button == ALLEGRO_MOUSE_BUTTON_RIGHT && m->mouse.b_right == true) {
             m->mouse.b_right = false;
@@ -95,22 +107,32 @@ void gun(Mouse* m, Shot *s[], int quantos, Player* p, ALLEGRO_EVENT event) {
     
 };
 
-void shot(Shot *s[], int quantos, ALLEGRO_EVENT event) {
+void shot(Shot s[], int quantos, ALLEGRO_EVENT event) {
+    
+    for (int i = 0; i < quantos; i++) {
+        if(s[i].active == true){
+            if (event.type == ALLEGRO_EVENT_TIMER) {
+                s[i].shotX += s[i].shotSpdX;
+                s[i].shotY += s[i].shotSpdY;
 
-    if (event.type == ALLEGRO_EVENT_TIMER) {
-        s[quantos]->shotX += s[quantos]->shotSpdX;
-        s[quantos]->shotY += s[quantos]->shotSpdY;
-        
+            }
+        }
     }
 };
 
-void gunDraw(Mouse* m, Shot *s[], int quantos, Player* p) {
+void gunDraw(Mouse* m, Shot s[], int quantos, Player* p) {
 
     al_draw_filled_rectangle(p->x + (p->largura / 3), p->y + ((p->altura / 3) * 2), p->x + ((p->largura/3) * 2), p->y + ((p->altura/3) * 3), al_map_rgb(0, 0, 255));
 
     al_draw_filled_circle(m->mouseX, m->mouseY, 7.5, al_map_rgb(0, 200, 0));
 
-    al_draw_filled_circle(m->gunX, m->gunY, 7.5, al_map_rgb(0, 0, 255));
+    al_draw_filled_circle(m->gunX, m->gunY, 6.5, al_map_rgb(0, 0, 255));
 
-    al_draw_filled_circle(s[quantos]->shotX, s[quantos]->shotY, 7.5, al_map_rgb(0, 0, 255));
+    
+
+    for (int i = 0; i < quantos; i++) {
+        if (s[i].active == true) {
+            al_draw_filled_circle(s[i].shotX, s[i].shotY, 6.5, al_map_rgb(0, 0, 255));
+        }
+    }
 };

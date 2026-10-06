@@ -122,8 +122,14 @@ int main() {
         Mouse* m = &mouse;
 
         Shot shots[5];
+        int quantos = 5;
 
-        Shot* s = &shots[4];
+        for (int i = 0; i < quantos; i++) {
+
+            shots[i].active = false;
+        }
+
+        Shot* s = &shots[0];
 
         //Criando evento
 
@@ -192,8 +198,8 @@ int main() {
             //Chamando function playerMove e gun
            
             playerMove(p, event);
-            gun(m, s, 4, p, event);
-            shot(s, 4, event);
+            gun(m, s, quantos, p, event);
+            shot(shots, quantos, event);
 
             //Atualizando colisão quando o timer atualiza
 
@@ -221,7 +227,15 @@ int main() {
             //Chamando function playerDraw e gunDraw
 
             playerDraw(p);
-            gunDraw(m, s, 4, p);
+            gunDraw(m, shots, quantos, p);
+
+            if (event.type == ALLEGRO_EVENT_KEY_DOWN && event.keyboard.keycode == ALLEGRO_KEY_R) {
+
+                for (int i = 0; i < quantos; i++) {
+
+                    shots[i].active = false;
+                }
+            }
 
             //Para fechar janela do allegro com ESC ou no 'X' da janela
 
