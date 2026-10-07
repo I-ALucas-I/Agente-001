@@ -43,10 +43,12 @@ int main() {
     ALLEGRO_EVENT_QUEUE* eventQueue;
     eventQueue = al_create_event_queue();
 
+    //Criando timer
+
     ALLEGRO_TIMER* timer;
     timer = al_create_timer(1.0 / 30.0);
 
-    //Verifica se a janela e a fila de eventos foi criada, se passar começa o código principal
+    //Verifica se a janela, a fila de eventos e o timer foi criada, se passar começa o código principal
 
     if (window == NULL || eventQueue == NULL || timer == NULL) {
         return -1;
@@ -59,6 +61,8 @@ int main() {
         al_register_event_source(eventQueue, al_get_timer_event_source(timer));
         al_register_event_source(eventQueue, al_get_keyboard_event_source());
         al_register_event_source(eventQueue, al_get_mouse_event_source());
+
+        //ligando timer
 
         al_start_timer(timer);
 
@@ -89,6 +93,9 @@ int main() {
         //          |-----|-----|                           //
         //                                                  //
         //--------------------------------------------------//
+        //
+
+        //Criando plataforma de nascimento dos robôs 1x3 || 1-1 | 1-2 | 1-3 ||
 
         Platform nascimento;
         nascimento.tipo = 4;
@@ -96,7 +103,7 @@ int main() {
 
         nascimento = platform(lT, aT, 16, 17, 1, 1, nascimentoP);
 
-        //Iniciando váriavel do jogador
+        //Iniciando array do jogador
 
         Player jogador[3];
         int quantosPlayers = 3;
@@ -143,12 +150,12 @@ int main() {
             }
         }
 
-        //Ponteiro para chamar jogador nas functions
+        //Ponteiro para saber corpo ativo do player
 
         int playerAtual = 0;
         int* pa = &playerAtual;
 
-      
+        //Iniciando inimigo
 
         Enemie inimigo;
         //                          coordenada na grid
@@ -162,12 +169,15 @@ int main() {
         inimigo.altura = (alturaTela / 60) * 3;
         
 
-        //Ponteiro para chamar jogador nas functions
+        //Ponteiro para chamar inimigo nas functions
 
         Enemie* e = &inimigo;
 
+        //Ponteiro para mudanças do tiro para poc
+
         int mudar = 0;
         int* mu = &mudar;
+
         //Iniciando váriavel do mouse
 
         Mouse mouse;
@@ -181,6 +191,8 @@ int main() {
 
         Mouse* m = &mouse;
 
+        //Iniciando array de tiros
+
         Shot shots[5];
         int quantos = 5;
 
@@ -190,7 +202,11 @@ int main() {
             shots[i].used = false;
         }
 
+        //Ponteiro para tiros nas functions
+
         Shot* s = &shots[0];
+
+        //Põe o muse no meio da tela
 
         al_set_mouse_xy(window, mouse.mouseX, mouse.mouseY);
 
@@ -210,55 +226,55 @@ int main() {
             
             background(lT, aT);
 
-            //Criando variavel de plataforma e ponteiro para usar em functions
+            //Criando variáveis de plataforma e ponteiro para usar em functions
 
             Platform plataforma;
             plataforma.tipo = 0;
             Platform* plataformaP = &plataforma;
 
-            //Criando cenário com plataformas
-
-            plataforma = platform(lT, aT, 1, 18, 30, 3, plataformaP);
-
             Platform plataforma1;
             plataforma1.tipo = 1;
             Platform* plataforma1P = &plataforma1;
-
-            plataforma1 = platform(lT, aT, 1, 1, 30, 17, plataforma1P);
 
             Platform plataforma2;
             plataforma2.tipo = 2;
             Platform* plataforma2P = &plataforma2;
 
-            plataforma2 = platform(lT, aT, 11, 14, 5, 4, plataforma2P);
-
             Platform plataforma4;
             plataforma4.tipo = 3;
             Platform* plataforma4P = &plataforma4;
-
-            plataforma4 = platform(lT, aT, 21, 10, 5, 8, plataforma4P);
 
             Platform plataforma5;
             plataforma5.tipo = 3;
             Platform* plataforma5P = &plataforma5;
 
-            plataforma5 = platform(lT, aT, 21, 9, 4, 1, plataforma5P);
-
             Platform plataforma3;
             plataforma3.tipo = 2;
             Platform* plataforma3P = &plataforma3;
 
+            //Criando cenário com plataformas
+
+            plataforma = platform(lT, aT, 1, 18, 30, 3, plataformaP);
+
+            plataforma1 = platform(lT, aT, 1, 1, 30, 17, plataforma1P);
+
+            plataforma2 = platform(lT, aT, 11, 14, 5, 4, plataforma2P);
+
+            plataforma4 = platform(lT, aT, 21, 10, 5, 8, plataforma4P);
+
+            plataforma5 = platform(lT, aT, 21, 9, 4, 1, plataforma5P);
+
             plataforma3 = platform(lT, aT, 19, 12, 5, 6, plataforma3P);
 
-            
-
-            //Chamando function playerMove e gun
+            //Criando váriaveis para controle do sistema de vida
 
             int playerAnterior = playerAtual;
 
             playerSystem(jogador, quantosPlayers, pa, event);
 
             Player* p = &jogador[playerAtual];
+
+            //Chamando function playerMove, gun e shots
 
             playerMove(p, event);
             gun(m, s, quantos, p, event);
@@ -280,6 +296,8 @@ int main() {
                 enemieCollision(jogador, 3, s, quantos, pa, e, mu);
                 //enemieShotCollision(s, quantos, e, mu);
             }
+
+            //Criando robôs do player na plataforma de nascimento
 
             if (playerAnterior != playerAtual) {
 
@@ -307,11 +325,13 @@ int main() {
             platformDraw(plataforma3P);
             platformDraw(nascimentoP);
             
-            //Chamando function playerDraw e gunDraw
+            //Chamando function playerDraw, gunDraw e enemieDraw
 
             playerDraw(jogador, quantosPlayers);
             gunDraw(m, s, quantos, p);
             enemieDraw(e);
+
+            //Comando temporário para resetar tiros
 
             if (event.type == ALLEGRO_EVENT_KEY_DOWN && event.keyboard.keycode == ALLEGRO_KEY_R) {
 
