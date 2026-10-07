@@ -48,6 +48,12 @@ Platform platform(int* larguraTela, int* alturaTela, int gridX, int gridY,int qu
 			if (pl->tipo == 3) {
 				pl->solid = 0;
 			}
+			if (pl->tipo == 4) {
+				pl->solid = 0;
+
+				pl->largura = (xInicial * 3) * (gridX + 2) - pl->x;
+				pl->altura = (yInicial * 3) * gridY - pl->y;
+			}
 		}
 	}
 	/*al_draw_filled_circle(pl->x, pl->y, 10, al_map_rgb(255, 100, 150));
@@ -61,18 +67,22 @@ void platformDraw(Platform* pl) {
 
 	if (pl->tipo == 0) {
 		al_draw_filled_rectangle(pl->x, pl->y, pl->x + pl->largura, pl->y + pl->altura, al_map_rgb(0, 255, 0));
-		pl->solid = 0;
+		
 	}
 	if (pl->tipo == 1) {
 		al_draw_filled_rectangle(pl->x, pl->y, pl->x + pl->largura, pl->y + pl->altura, al_map_rgb(0, 255, 255));
-		pl->solid = 1;
+		
 	}
 	if (pl->tipo == 2) {
 		al_draw_filled_rectangle(pl->x, pl->y, pl->x + pl->largura, pl->y + pl->altura, al_map_rgb(255, 0, 255));
-		pl->solid = 0;
+		
 	}
 	if (pl->tipo == 3) {
 		al_draw_filled_rectangle(pl->x, pl->y, pl->x + pl->largura, pl->y + pl->altura, al_map_rgb(0, 0, 255));
-		pl->solid = 0;
+		
+	}
+	if (pl->tipo == 4) {
+		al_draw_filled_rectangle(pl->x, pl->y, pl->x + pl->largura, pl->y + pl->altura, al_map_rgb(240, 167, 58));
+		
 	}
 };

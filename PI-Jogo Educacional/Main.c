@@ -71,6 +71,10 @@ int main() {
         ALLEGRO_COLOR fundo;
         fundo = al_map_rgb(0, 0, 0);
 
+        //Criando evento
+
+        ALLEGRO_EVENT event;
+
         //
         // Player, inimigos e "blocos" serão posicionados pela grid
         // 
@@ -86,15 +90,22 @@ int main() {
         //                                                  //
         //--------------------------------------------------//
 
+        Platform nascimento;
+        nascimento.tipo = 4;
+        Platform* nascimentoP = &nascimento;
+
+        nascimento = platform(lT, aT, 16, 17, 1, 1, nascimentoP);
+
         //Iniciando váriavel do jogador
 
-        Player jogador;
+        Player jogador[3];
+        int quantosPlayers = 3;
         //                          coordenada na grid
         // 
         //                                   |
         //                                   V
         //
-        jogador.x = ((larguraTela/90) * 3) * 3 - ((larguraTela / 90) * 3);
+        /*jogador.x = ((larguraTela/90) * 3) * 3 - ((larguraTela / 90) * 3);
         jogador.y = ((alturaTela / 60) * 3) * 16 - ((alturaTela / 60) * 3);
         jogador.largura = (larguraTela / 90) * 3;
         jogador.altura = (alturaTela / 60) * 3;
@@ -103,11 +114,41 @@ int main() {
         jogador.standing = true;
         jogador.keyboard.a_pressed = false;
         jogador.keyboard.d_pressed = false;
-        jogador.keyboard.w_pressed = false;
+        jogador.keyboard.w_pressed = false;*/
+
+        for (int i = 0; i < quantosPlayers; i++) {
+            jogador[i].x = ((larguraTela / 90) * 3) * 3 - ((larguraTela / 90) * 3);
+            jogador[i].y = ((alturaTela / 60) * 3) * 16 - ((alturaTela / 60) * 3);
+            jogador[i].largura = (larguraTela / 90) * 3;
+            jogador[i].altura = (alturaTela / 60) * 3;
+            jogador[i].velocidade = 6;
+            jogador[i].velY = 0;
+            jogador[i].standing = true;
+            jogador[i].active = false;
+            jogador[i].inUse = false;
+            jogador[i].used = false;
+            jogador[i].keyboard.a_pressed = false;
+            jogador[i].keyboard.d_pressed = false;
+            jogador[i].keyboard.w_pressed = false;
+
+            if (i == 0) {
+                jogador[i].active = true;
+                jogador[i].inUse = true;
+                jogador[0].x = nascimento.x + (nascimento.largura / 6 * 2);
+
+                jogador[0].y = nascimento.y - jogador[0].altura * 2;
+            }
+            if (i == quantosPlayers - 1) {
+                jogador[i].active = true;
+            }
+        }
 
         //Ponteiro para chamar jogador nas functions
 
-        Player* p = &jogador;
+        int playerAtual = 0;
+        int* pa = &playerAtual;
+
+      
 
         Enemie inimigo;
         //                          coordenada na grid
@@ -125,7 +166,7 @@ int main() {
 
         Enemie* e = &inimigo;
 
-        int mudar = 16;
+        int mudar = 0;
         int* mu = &mudar;
         //Iniciando váriavel do mouse
 
@@ -151,10 +192,6 @@ int main() {
 
         Shot* s = &shots[0];
 
-        //Criando evento
-
-        ALLEGRO_EVENT event;
-
         al_set_mouse_xy(window, mouse.mouseX, mouse.mouseY);
 
         //looping de jogo principal
@@ -168,7 +205,7 @@ int main() {
             //Fazendo fila de eventos
 
             al_wait_for_event(eventQueue, &event);
-            
+
             //Chamando funtion de background/grid
             
             background(lT, aT);
@@ -193,7 +230,7 @@ int main() {
             plataforma2.tipo = 2;
             Platform* plataforma2P = &plataforma2;
 
-            plataforma2 = platform(lT, aT, 11, 15, 5, 1, plataforma2P);
+            plataforma2 = platform(lT, aT, 11, 14, 5, 4, plataforma2P);
 
             Platform plataforma4;
             plataforma4.tipo = 3;
@@ -216,7 +253,13 @@ int main() {
             
 
             //Chamando function playerMove e gun
-           
+
+            int playerAnterior = playerAtual;
+
+            playerSystem(jogador, quantosPlayers, pa, event);
+
+            Player* p = &jogador[playerAtual];
+
             playerMove(p, event);
             gun(m, s, quantos, p, event);
             shot(s, quantos, event);
@@ -233,8 +276,25 @@ int main() {
                 plataformCollision(p, plataforma3P);
                 plataformCollision(p, plataforma4P);
                 plataformCollision(p, plataforma5P);
-                enemieCollision(p, e);
-                enemieShotCollision(s, quantos, e, mu);
+                plataformCollision(p, nascimentoP);
+                enemieCollision(jogador, 3, s, quantos, pa, e, mu);
+                //enemieShotCollision(s, quantos, e, mu);
+            }
+
+            if (playerAnterior != playerAtual) {
+
+                p = &jogador[playerAtual];
+
+                if (playerAtual != quantosPlayers - 1) {
+
+                    p->x = nascimento.x
+                        + nascimento.largura / 2
+                        - p->largura / 2;
+
+                    p->y = nascimento.y
+                        - p->altura * 2;
+                }
+                
             }
 
             //Desenhando plataformas
@@ -245,10 +305,11 @@ int main() {
             platformDraw(plataforma4P);
             platformDraw(plataforma5P);
             platformDraw(plataforma3P);
+            platformDraw(nascimentoP);
             
             //Chamando function playerDraw e gunDraw
 
-            playerDraw(p);
+            playerDraw(jogador, quantosPlayers);
             gunDraw(m, s, quantos, p);
             enemieDraw(e);
 

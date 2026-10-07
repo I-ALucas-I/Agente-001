@@ -5,7 +5,7 @@
 #include "Background.h"
 
 void plataformCollision(Player *p, Platform *pl);
-void enemieCollision(Player* p, Enemie* e);
+void enemieCollision(Player p[], int quantosPlayers, Shot s[], int quantos, int* pa, Enemie* e, int* mudar);
 void enemieShotCollision(Shot* s[], int quantos, Enemie* e, int* mudar);
 
 
