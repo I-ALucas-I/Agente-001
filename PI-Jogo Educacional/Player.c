@@ -100,8 +100,6 @@ void gun(Mouse* m, Shot s[], int quantos, Player* p, ALLEGRO_EVENT event) {
         if (event.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT && m->mouse.b_left == true) {
             m->mouse.b_left = false;
             
-            
-            
             for (int i = 0; i < quantos; i++) {
              
                 if (s[i].active == false) {
@@ -157,8 +155,6 @@ void gunDraw(Mouse* m, Shot s[], int quantos, Player* p) {
     al_draw_filled_circle(m->mouseX, m->mouseY, 7.5, al_map_rgb(0, 200, 0));
 
     al_draw_filled_circle(m->gunX, m->gunY, 6.5, al_map_rgb(0, 0, 255));
-
-    
 
     for (int i = 0; i < quantos; i++) {
         if (s[i].active == true && s[i].used == false) {

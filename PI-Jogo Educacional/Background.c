@@ -48,7 +48,7 @@ Platform platform(int* larguraTela, int* alturaTela, int gridX, int gridY,int qu
 			if (pl->tipo == 3) {
 				pl->solid = 0;
 			}
-			if (pl->tipo == 4) {
+			if (pl->tipo == 4) { //Plataforma de renascimento
 				pl->solid = 0;
 
 				pl->largura = (xInicial * 3) * (gridX + 2) - pl->x;

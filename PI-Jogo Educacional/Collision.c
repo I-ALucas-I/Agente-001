@@ -7,19 +7,19 @@
 
 void plataformCollision(Player* p, Platform* pl) {
 
+	int playerE = p->x;
+	int playerD = p->x + p->largura;
+	int playerC = p->y;
+	int playerB = p->y + p->altura * 2;
+	int playerBAntes = playerB - p->velY;
+	int playerCAntes = playerC - p->velY;
+
+	int plataformaEsquerda = pl->x;
+	int plataformaDireita = pl->x + pl->largura;
+	int plataformaTopo = pl->y;
+	int plataformaBaixo = pl->y + pl->altura;
+
 	if (pl->solid == 0) {
-
-		int playerE = p->x;
-		int playerD = p->x + p->largura;
-		int playerC = p->y;
-		int playerB = p->y + p->altura * 2;
-		int playerBAntes = playerB - p->velY;
-		int playerCAntes = playerC - p->velY;
-
-		int plataformaEsquerda = pl->x;
-		int plataformaDireita = pl->x + pl->largura;
-		int plataformaTopo = pl->y;
-		int plataformaBaixo = pl->y + pl->altura;
 
 		if (playerE < plataformaDireita && playerD > plataformaEsquerda && playerB > plataformaTopo && playerC < plataformaBaixo){
 			if (playerE >= plataformaDireita - p->velocidade) {
@@ -35,13 +35,13 @@ void plataformCollision(Player* p, Platform* pl) {
 			}
 		}
 
-		if (playerD > plataformaEsquerda && playerE < plataformaDireita && p->velY > 0 && playerBAntes <= plataformaTopo && playerB >= plataformaTopo){
+		if (playerD > plataformaEsquerda && playerE < plataformaDireita && playerBAntes <= plataformaTopo && playerB >= plataformaTopo){
 			p->y = plataformaTopo - (p->altura * 2);
 			p->velY = 0;
 			p->standing = true;
 		}
 
-		if (playerD > plataformaEsquerda && playerE < plataformaDireita && p->velY < 0 && playerCAntes >= plataformaBaixo && playerC <= plataformaBaixo){
+		if (playerD > plataformaEsquerda && playerE < plataformaDireita && playerCAntes >= plataformaBaixo && playerC <= plataformaBaixo){
 			p->y = plataformaBaixo;
 			p->velY = 0;
 		}
@@ -72,7 +72,9 @@ void enemieCollision(Player p[], int quantosPlayers, Shot s[], int quantos, int*
 				if (i == quantosPlayers - 1) {
 					if (playerD > enemieEsquerda && playerE < enemieDireita && playerB > enemieTopo && playerC < enemieBaixo) {
 
-						p[i].x = ((larguraTela / 90) * 3) * 3 - ((larguraTela / 90) * 3);;
+						//Falsa morte para poc
+
+						p[i].x = ((larguraTela / 90) * 3) * 3 - ((larguraTela / 90) * 3);
 						p[i].y = ((alturaTela / 60) * 3) * 16 - ((alturaTela / 60) * 3);
 
 					}
@@ -106,12 +108,12 @@ void enemieCollision(Player p[], int quantosPlayers, Shot s[], int quantos, int*
 					}
 				}
 
-				if (playerD > enemieEsquerda && playerE < enemieDireita && p[i].velY > 0 && playerBAntes <= enemieTopo && playerB >= enemieTopo) {
+				if (playerD > enemieEsquerda && playerE < enemieDireita && playerBAntes <= enemieTopo && playerB >= enemieTopo) {
 					p[i].y = enemieTopo - (p[i].altura * 2);
 					p[i].velY = 0;
 					p[i].standing = true;
 				}
-				if (playerD > enemieEsquerda && playerE < enemieDireita && p[i].velY < 0 && playerCAntes >= enemieBaixo && playerC <= enemieBaixo) {
+				if (playerD > enemieEsquerda && playerE < enemieDireita && playerCAntes >= enemieBaixo && playerC <= enemieBaixo) {
 					p[i].y = enemieBaixo;
 					p[i].velY = 0;
 				}
