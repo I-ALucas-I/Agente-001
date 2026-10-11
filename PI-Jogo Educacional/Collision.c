@@ -5,7 +5,7 @@
 #include <allegro5/allegro_primitives.h>
 
 
-void plataformCollision(Player* p, Platform* pl) {
+void plataformCollision(Player* p, Shot* left_s, int left_quantos, Shot* right_s, int right_quantos, Platform* pl) {
 
 	int playerE = p->x;
 	int playerD = p->x + p->largura;
@@ -18,6 +18,25 @@ void plataformCollision(Player* p, Platform* pl) {
 	int plataformaDireita = pl->x + pl->largura;
 	int plataformaTopo = pl->y;
 	int plataformaBaixo = pl->y + pl->altura;
+
+	int larguraTela = 1080;
+	int alturaTela = 720;
+
+	//Colisão bordas da tela
+
+	if (playerE < larguraTela && playerD > 0 && playerB > 0 && playerC < alturaTela) {
+		if (playerE <= 0 - p->velocidade) {
+			p->x = 0;
+			p->keyboard.a_pressed = false;
+		}
+	}
+
+	if (playerD > 0 && playerE < larguraTela && playerB > 0 && playerC < alturaTela) {
+		if (playerD >= larguraTela + p->velocidade) {
+			p->x = larguraTela - p->largura;
+			p->keyboard.d_pressed = false;
+		}
+	}
 
 	if (pl->solid == 0) {
 
@@ -45,10 +64,50 @@ void plataformCollision(Player* p, Platform* pl) {
 			p->y = plataformaBaixo;
 			p->velY = 0;
 		}
+	
+		for (int i = 0; i < left_quantos; i++) {
+			int leftShotE = 0;
+			int leftShotD = 0;
+			int leftShotC = 0;
+			int leftShotB = 0;
+
+
+			if (left_s[i].leftActive == true && left_s[i].leftUsed == false) {
+				leftShotE = left_s[i].leftShotX - 4.5;
+				leftShotD = left_s[i].leftShotX + 4.5;
+				leftShotC = left_s[i].leftShotY - 4.5;
+				leftShotB = left_s[i].leftShotY + 4.5;
+			};
+
+			
+			if (leftShotE < plataformaDireita && leftShotD > plataformaEsquerda && leftShotB > plataformaTopo && leftShotC < plataformaBaixo) {
+				left_s[i].leftUsed = true;
+			}
+		}
+
+		for (int i = 0; i < right_quantos; i++) {
+			int rightShotE = 0;
+			int rightShotD = 0;
+			int rightShotC = 0;
+			int rightShotB = 0;
+
+
+			if (right_s[i].rightActive == true && right_s[i].rightUsed == false) {
+				rightShotE = right_s[i].rightShotX - 4.5;
+				rightShotD = right_s[i].rightShotX + 4.5;
+				rightShotC = right_s[i].rightShotY - 4.5;
+				rightShotB = right_s[i].rightShotY + 4.5;
+			};
+
+
+			if (rightShotE < plataformaDireita && rightShotD > plataformaEsquerda && rightShotB > plataformaTopo && rightShotC < plataformaBaixo) {
+				right_s[i].rightUsed = true;
+			}
+		}
 	}
 };
 
-void enemieCollision(Player p[], int quantosPlayers, Shot s[], int quantos, int* pa, Enemie* e, int* mudar) {
+void enemieCollision(Player p[], int quantosPlayers, Shot* left_s, int left_quantos, Shot* right_s, int right_quantos, int* pa, Enemie* e, int* mudar) {
 
 	int enemieEsquerda = e->x;
 	int enemieDireita = e->x + e->largura;
@@ -122,30 +181,62 @@ void enemieCollision(Player p[], int quantosPlayers, Shot s[], int quantos, int*
 		}
 	}
 
-	for (int i = 0; i < quantos; i++) {
-		int shotE = 0;
-		int shotD = 0;
-		int shotC = 0;
-		int shotB = 0;
+	for (int i = 0; i < left_quantos; i++) {
+		int leftShotE = 0;
+		int leftShotD = 0;
+		int leftShotC = 0;
+		int leftShotB = 0;
 
 
-		if (s[i].active == true && s[i].used == false) {
-			shotE = s[i].shotX - 6.5;
-			shotD = s[i].shotX + 6.5;
-			shotC = s[i].shotY - 6.5;
-			shotB = s[i].shotY + 6.5;
+		if (left_s[i].leftActive == true && left_s[i].leftUsed == false) {
+			leftShotE = left_s[i].leftShotX - 4.5;
+			leftShotD = left_s[i].leftShotX + 4.5;
+			leftShotC = left_s[i].leftShotY - 4.5;
+			leftShotB = left_s[i].leftShotY + 4.5;
 		};
 
 		if (*mudar == 0) {
-			if (shotE < enemieDireita && shotD > enemieEsquerda && shotB > enemieTopo && shotC < enemieBaixo) {
+			if (leftShotE < enemieDireita && leftShotD > enemieEsquerda && leftShotB > enemieTopo && leftShotC < enemieBaixo) {
 
-				e->x = ((larguraTela / 90) * 3) * 7 - ((larguraTela / 90) * 3);;
+				e->x = ((larguraTela / 90) * 3) * 7 - ((larguraTela / 90) * 3);
 				e->y = ((alturaTela / 60) * 3) * 17 - ((alturaTela / 60) * 3);
 
-				s[i].used = true;
+				left_s[i].leftUsed = true;
 				(*mudar)++;
 			}
 		}
+		else {
+			if (leftShotE < enemieDireita && leftShotD > enemieEsquerda && leftShotB > enemieTopo && leftShotC < enemieBaixo) {
+
+				e->x = ((larguraTela / 90) * 3) * 7 - ((larguraTela / 90) * 3);
+				e->y = ((alturaTela / 60) * 3) * 17 - ((alturaTela / 60) * 3);
+
+				left_s[i].leftUsed = true;
+			}
+		}
+	}
+
+	for (int i = 0; i < right_quantos; i++) {
+		int rightShotE = 0;
+		int rightShotD = 0;
+		int rightShotC = 0;
+		int rightShotB = 0;
+
+
+		if (right_s[i].rightActive == true && right_s[i].rightUsed == false) {
+			rightShotE = right_s[i].rightShotX - 4.5;
+			rightShotD = right_s[i].rightShotX + 4.5;
+			rightShotC = right_s[i].rightShotY - 4.5;
+			rightShotB = right_s[i].rightShotY + 4.5;
+		};
+
+		
+		if (rightShotE < enemieDireita && rightShotD > enemieEsquerda && rightShotB > enemieTopo && rightShotC < enemieBaixo) {
+
+			right_s[i].rightUsed = true;
+		}
+		
+		
 	}
 }
 //void enemieShotCollision(Shot s[], int quantos, Enemie* e, int* mudar) {

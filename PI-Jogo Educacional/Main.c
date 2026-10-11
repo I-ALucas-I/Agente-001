@@ -141,9 +141,9 @@ int main() {
             if (i == 0) {
                 jogador[i].active = true;
                 jogador[i].inUse = true;
-                jogador[0].x = nascimento.x + (nascimento.largura / 6 * 2);
+                jogador[i].x = nascimento.x + (nascimento.largura / 6 * 2);
 
-                jogador[0].y = nascimento.y - jogador[0].altura * 2;
+                jogador[i].y = nascimento.y - (jogador[0].altura * 2);
             }
             if (i == quantosPlayers - 1) {
                 jogador[i].active = true;
@@ -193,18 +193,28 @@ int main() {
 
         //Iniciando array de tiros
 
-        Shot shots[5];
-        int quantos = 5;
+        Shot leftShots[5];
+        int leftShotQuantos = 5;
 
-        for (int i = 0; i < quantos; i++) {
+        for (int i = 0; i < leftShotQuantos; i++) {
 
-            shots[i].active = false;
-            shots[i].used = false;
+            leftShots[i].leftActive = false;
+            leftShots[i].leftUsed = false;
+        }
+
+        Shot rightShots[5];
+        int rightShotQuantos = 5;
+
+        for (int i = 0; i < rightShotQuantos; i++) {
+
+            rightShots[i].rightActive = false;
+            rightShots[i].rightUsed = false;
         }
 
         //Ponteiro para tiros nas functions
 
-        Shot* s = &shots[0];
+        Shot* left_s = &leftShots[0];
+        Shot* right_s = &rightShots[0];
 
         //Põe o muse no meio da tela
 
@@ -277,8 +287,8 @@ int main() {
             //Chamando function playerMove, gun e shots
 
             playerMove(p, event);
-            gun(m, s, quantos, p, event);
-            shot(s, quantos, event);
+            gun(m, left_s, leftShotQuantos, right_s, rightShotQuantos, p, event);
+            shot(left_s, leftShotQuantos, right_s, rightShotQuantos, event);
 
             //Atualizando colisão quando o timer atualiza
 
@@ -286,14 +296,14 @@ int main() {
 
                 p->standing = false;
 
-                plataformCollision(p, plataformaP);
-                plataformCollision(p, plataforma1P);
-                plataformCollision(p, plataforma2P);
-                plataformCollision(p, plataforma3P);
-                plataformCollision(p, plataforma4P);
-                plataformCollision(p, plataforma5P);
-                plataformCollision(p, nascimentoP);
-                enemieCollision(jogador, 3, s, quantos, pa, e, mu);
+                plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataformaP);
+                plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma1P);
+                plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma2P);
+                plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma3P);
+                plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma4P);
+                plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma5P);
+                plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, nascimentoP);
+                enemieCollision(jogador, quantosPlayers, left_s, leftShotQuantos, right_s, rightShotQuantos, pa, e, mu);
                 //enemieShotCollision(s, quantos, e, mu);
             }
 
@@ -328,17 +338,23 @@ int main() {
             //Chamando function playerDraw, gunDraw e enemieDraw
 
             playerDraw(jogador, quantosPlayers);
-            gunDraw(m, s, quantos, p);
+            gunDraw(m, left_s, leftShotQuantos, right_s, rightShotQuantos, p);
             enemieDraw(e);
 
             //Comando temporário para resetar tiros
 
             if (event.type == ALLEGRO_EVENT_KEY_DOWN && event.keyboard.keycode == ALLEGRO_KEY_R) {
 
-                for (int i = 0; i < quantos; i++) {
+                for (int i = 0; i < leftShotQuantos; i++) {
 
-                    shots[i].active = false;
-                    shots[i].used = false;
+                    leftShots[i].leftActive = false;
+                    leftShots[i].leftUsed = false;
+                }
+
+                for (int i = 0; i < rightShotQuantos; i++) {
+
+                    rightShots[i].rightActive = false;
+                    rightShots[i].rightUsed = false;
                 }
             }
 
