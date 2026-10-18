@@ -51,12 +51,4 @@
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\..\..\..\..\..\Downloads\terra-agente 001.png">
-      <Filter>Arquivos de Recurso</Filter>
-    </Image>
-    <Image Include="..\..\..\..\..\..\Downloads\grama_agente_001.png">
-      <Filter>Arquivos de Origem</Filter>
-    </Image>
-  </ItemGroup>
 </Project>

@@ -14,9 +14,9 @@ typedef struct {
 	int altura;
 	int tipo;
 	int solid;
-	ALLEGRO_BITMAP* grama;
+	ALLEGRO_BITMAP* bloco;
 }Platform;
 
 Platform platform(int* larguraTela, int* alturaTela, int gridX, int gridY, int quantosX, int quantosY, Platform* pl, ALLEGRO_BITMAP* bitmap);
-void platformDraw(Platform* pl);
+void platformDraw(Platform* pl, int quantosX, int quantosY);
 #endif

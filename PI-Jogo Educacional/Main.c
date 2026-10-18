@@ -53,7 +53,7 @@ int main() {
     ALLEGRO_TIMER* timer;
     timer = al_create_timer(1.0 / 30.0);
 
-    ALLEGRO_BITMAP* bitmap = al_load_bitmap("grama_agente_001.png");
+    ALLEGRO_BITMAP* bitmap = al_load_bitmap("agente_001_blocos.png");
 
     char caminho[1024];
 
@@ -123,19 +123,19 @@ int main() {
         Platform* plataforma1P = &plataforma1;
 
         Platform plataforma2;
-        plataforma2.tipo = 2;
+        plataforma2.tipo = 0;
         Platform* plataforma2P = &plataforma2;
 
         Platform plataforma4;
-        plataforma4.tipo = 3;
+        plataforma4.tipo = 0;
         Platform* plataforma4P = &plataforma4;
 
         Platform plataforma5;
-        plataforma5.tipo = 3;
+        plataforma5.tipo = 0;
         Platform* plataforma5P = &plataforma5;
 
         Platform plataforma3;
-        plataforma3.tipo = 2;
+        plataforma3.tipo = 0;
         Platform* plataforma3P = &plataforma3;
 
         nascimento = platform(lT, aT, 16, 17, 1, 1, nascimentoP, bitmap);
@@ -376,13 +376,13 @@ int main() {
 
             //Desenhando plataformas
 
-            platformDraw(plataformaP);
-            platformDraw(plataforma1P);
-            platformDraw(plataforma2P);
-            platformDraw(plataforma4P);
-            platformDraw(plataforma5P);
-            platformDraw(plataforma3P);
-            platformDraw(nascimentoP);
+            platformDraw(plataformaP, 30, 3);
+            platformDraw(plataforma1P, 0, 0);
+            platformDraw(plataforma2P, 5, 5);
+            platformDraw(plataforma4P, 5, 9);
+            platformDraw(plataforma5P, 4, 2);
+            platformDraw(plataforma3P, 5, 7);
+            platformDraw(nascimentoP, 0, 0);
             
             //Chamando function playerDraw, gunDraw e enemieDraw
 
