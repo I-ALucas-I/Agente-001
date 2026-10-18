@@ -216,16 +216,14 @@ int main() {
         inimigo.y = ((alturaTela / 60) * 3) * 17 - ((alturaTela / 60) * 3);
         inimigo.largura = (larguraTela / 90) * 3;
         inimigo.altura = (alturaTela / 60) * 3;
+        inimigo.velocidade = 4.5;
+        inimigo.velY = 0;
+        inimigo.mudar = 0;
         
 
         //Ponteiro para chamar inimigo nas functions
 
         Enemie* e = &inimigo;
-
-        //Ponteiro para mudanças do tiro para poc
-
-        int mudar = 0;
-        int* mu = &mudar;
 
         //Iniciando váriavel do mouse
 
@@ -339,6 +337,8 @@ int main() {
             gun(m, left_s, leftShotQuantos, right_s, rightShotQuantos, p, event);
             shot(left_s, leftShotQuantos, right_s, rightShotQuantos, event);
 
+            enemieMove(e, event);
+
             //Atualizando colisão quando o timer atualiza
 
             if (event.type == ALLEGRO_EVENT_TIMER) {
@@ -352,7 +352,10 @@ int main() {
                 plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma4P);
                 plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma5P);
                 plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, nascimentoP);
-                enemieCollision(jogador, quantosPlayers, left_s, leftShotQuantos, right_s, rightShotQuantos, pa, e, mu);
+                enemieCollision(jogador, quantosPlayers, left_s, leftShotQuantos, right_s, rightShotQuantos, pa, e);
+                enemiePlatformCollision(plataformaP, e);
+                enemiePlatformCollision(plataforma2P, e);
+                enemiePlatformCollision(plataforma3P, e);
                 //enemieShotCollision(s, quantos, e, mu);
             }
 

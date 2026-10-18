@@ -10,8 +10,9 @@ typedef struct {
     int y;
     int largura;
     int altura;
-    //float velocidade;
-    //float velY;
+    float velocidade;
+    float velY;
+    int mudar;
 
 } Enemie;
 

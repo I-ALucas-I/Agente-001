@@ -5,6 +5,16 @@
 
 void enemieMove(Enemie* e, ALLEGRO_EVENT event) {
 
+	if (event.type == ALLEGRO_EVENT_TIMER) {
+		if (e->mudar == 0) {
+			e->x += e->velocidade;
+
+			e->velY += 1;
+
+			e->y += e->velY;
+		}
+	}
+
 };
 
 void enemieDraw(Enemie* e) {

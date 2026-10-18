@@ -107,7 +107,7 @@ void plataformCollision(Player* p, Shot* left_s, int left_quantos, Shot* right_s
 	}
 };
 
-void enemieCollision(Player p[], int quantosPlayers, Shot* left_s, int left_quantos, Shot* right_s, int right_quantos, int* pa, Enemie* e, int* mudar) {
+void enemieCollision(Player p[], int quantosPlayers, Shot* left_s, int left_quantos, Shot* right_s, int right_quantos, int* pa, Enemie* e) {
 
 	int enemieEsquerda = e->x;
 	int enemieDireita = e->x + e->largura;
@@ -127,7 +127,7 @@ void enemieCollision(Player p[], int quantosPlayers, Shot* left_s, int left_quan
 			int playerBAntes = playerB - p[i].velY;
 			int playerCAntes = playerC - p[i].velY;
 
-			if (*mudar == 0) {
+			if (e->mudar == 0) {
 				if (i == quantosPlayers - 1) {
 					if (playerD > enemieEsquerda && playerE < enemieDireita && playerB > enemieTopo && playerC < enemieBaixo) {
 
@@ -195,14 +195,11 @@ void enemieCollision(Player p[], int quantosPlayers, Shot* left_s, int left_quan
 			leftShotB = left_s[i].leftShotY + 4.5;
 		};
 
-		if (*mudar == 0) {
+		if (e->mudar == 0) {
 			if (leftShotE < enemieDireita && leftShotD > enemieEsquerda && leftShotB > enemieTopo && leftShotC < enemieBaixo) {
 
-				e->x = ((larguraTela / 90) * 3) * 7 - ((larguraTela / 90) * 3);
-				e->y = ((alturaTela / 60) * 3) * 17 - ((alturaTela / 60) * 3);
-
 				left_s[i].leftUsed = true;
-				(*mudar)++;
+				e->mudar++;
 			}
 		}
 		else {
@@ -238,7 +235,65 @@ void enemieCollision(Player p[], int quantosPlayers, Shot* left_s, int left_quan
 		
 		
 	}
-}
+};
+
+void enemiePlatformCollision(Platform* pl, Enemie* e) {
+
+	int enemieEsquerda = e->x;
+	int enemieDireita = e->x + e->largura;
+	int enemieTopo = e->y;
+	int enemieBaixo = e->y + e->altura;
+
+	int enemieEsquerdaAntes = enemieEsquerda - e->velocidade;
+	int enemieDireitaAntes = enemieDireita - e->velocidade;
+	int enemieBaixoAntes = enemieBaixo - e->velY;
+	int enemieTopoAntes = enemieTopo - e->velY;
+
+	int plataformaEsquerda = pl->x;
+	int plataformaDireita = pl->x + pl->largura;
+	int plataformaTopo = pl->y;
+	int plataformaBaixo = pl->y + pl->altura;
+
+	int larguraTela = 1080;
+	int alturaTela = 720;
+
+	if (enemieEsquerda < larguraTela && enemieDireita > 0 && enemieBaixo > 0 && enemieTopo < alturaTela) {
+		if (enemieEsquerda <= 0 - e->velocidade) {
+			e->x = 0;
+			e->velocidade *= -1;
+		}
+	}
+
+	if (enemieDireita > 0 && enemieEsquerda < larguraTela && enemieBaixo > 0 && enemieTopo < alturaTela) {
+		if (enemieDireita >= larguraTela - e->velocidade) {
+			e->x = larguraTela - e->largura;
+			e->velocidade *= -1;
+		}
+	}
+
+	if (pl->solid == 0) {
+
+		if (e->velocidade > 0 && enemieDireita >= plataformaEsquerda && enemieDireitaAntes <= plataformaEsquerda && enemieBaixo > plataformaTopo && enemieTopo < plataformaBaixo) {
+			e->x = plataformaEsquerda - e->largura;
+			e->velocidade *= -1;
+		}
+
+		if (e->velocidade < 0 && enemieEsquerda <= plataformaDireita && enemieEsquerdaAntes >= plataformaDireita && enemieBaixo > plataformaTopo && enemieTopo < plataformaBaixo) {
+			e->x = plataformaDireita;
+			e->velocidade *= -1;
+		}
+
+		if (enemieDireita > plataformaEsquerda && enemieEsquerda < plataformaDireita && enemieBaixoAntes <= plataformaTopo && enemieBaixo >= plataformaTopo) {
+			e->y = plataformaTopo - e->altura;
+			e->velY = 0;
+		}
+
+		if (enemieDireita > plataformaEsquerda && enemieEsquerda < plataformaDireita && enemieTopoAntes >= plataformaBaixo && enemieTopo <= plataformaBaixo) {
+			e->y = plataformaBaixo;
+			e->velY = 0;
+		}
+	}
+};
 //void enemieShotCollision(Shot s[], int quantos, Enemie* e, int* mudar) {
 //	
 //	for (int i = 0; i < quantos; i++) {
