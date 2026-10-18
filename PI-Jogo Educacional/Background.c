@@ -1,6 +1,7 @@
 #include "Background.h"
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_image.h>
 
 void background(int* larguraTela, int* alturaTela) {
 
@@ -19,10 +20,10 @@ void background(int* larguraTela, int* alturaTela) {
 	}
 };
 
-Platform platform(int* larguraTela, int* alturaTela, int gridX, int gridY,int quantosX,int quantosY, Platform* pl) {
+Platform platform(int* larguraTela, int* alturaTela, int gridX, int gridY,int quantosX,int quantosY, Platform* pl, ALLEGRO_BITMAP* bitmap) {
 	int xInicial = *larguraTela / 90;
 	int yInicial = *alturaTela / 60;
-	
+
 	for (int i = 0; i < quantosY; i++) {
 		for (int j = 0; j < quantosX; j++) {
 			
@@ -31,12 +32,14 @@ Platform platform(int* larguraTela, int* alturaTela, int gridX, int gridY,int qu
 				pl->y = (yInicial * 3) * (gridY + i ) - (yInicial * 3);
 			}
 
+
 			if (i == quantosY-1 && j == quantosX-1) {
 				pl->largura = (xInicial * 3) * (gridX + j) - pl->x;
 				pl->altura = (yInicial * 3) * (gridY + i) - pl->y;
 			}
 
 			if (pl->tipo == 0) {
+				pl->grama = bitmap;
 				pl->solid = 0;
 			}
 			if (pl->tipo == 1) {
@@ -65,9 +68,16 @@ Platform platform(int* larguraTela, int* alturaTela, int gridX, int gridY,int qu
 
 void platformDraw(Platform* pl) {
 
-	if (pl->tipo == 0) {
-		al_draw_filled_rectangle(pl->x, pl->y, pl->x + pl->largura, pl->y + pl->altura, al_map_rgb(0, 255, 0));
-		
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 30; j++) {
+			int imagemX = pl->x + j * 36;
+			int imagemY = pl->y + i * 36;
+
+			if (pl->tipo == 0) {
+				//al_draw_filled_rectangle(pl->x, pl->y, pl->x + pl->largura, pl->y + pl->altura, al_map_rgb(0, 255, 0));
+				al_draw_bitmap(pl->grama, imagemX, imagemY, 0);
+			}
+		}
 	}
 	if (pl->tipo == 1) {
 		al_draw_filled_rectangle(pl->x, pl->y, pl->x + pl->largura, pl->y + pl->altura, al_map_rgb(0, 255, 255));

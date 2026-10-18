@@ -4,10 +4,14 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/keyboard.h>
 #include <allegro5/mouse.h>
+#include <allegro5/allegro_image.h>
 #include "Player.h"
 #include "Enemie.h"
 #include "Background.h"
 #include "Collision.h"
+
+#include <stdio.h>
+#include <direct.h>
 
 int main() {
 
@@ -17,6 +21,7 @@ int main() {
     al_install_keyboard();
     al_init_primitives_addon();
     al_install_mouse();
+    al_init_image_addon();
 
     //Criando janela do jogo
 
@@ -48,9 +53,17 @@ int main() {
     ALLEGRO_TIMER* timer;
     timer = al_create_timer(1.0 / 30.0);
 
+    ALLEGRO_BITMAP* bitmap = al_load_bitmap("grama_agente_001.png");
+
+    char caminho[1024];
+
+    if (_getcwd(caminho, sizeof(caminho)) != NULL) {
+        printf("Diretorio atual: %s\n", caminho);
+    }
+
     //Verifica se a janela, a fila de eventos e o timer foi criada, se passar começa o código principal
 
-    if (window == NULL || eventQueue == NULL || timer == NULL) {
+    if (window == NULL || eventQueue == NULL || timer == NULL || bitmap == NULL) {
         return -1;
     }
     else {
@@ -101,7 +114,43 @@ int main() {
         nascimento.tipo = 4;
         Platform* nascimentoP = &nascimento;
 
-        nascimento = platform(lT, aT, 16, 17, 1, 1, nascimentoP);
+        Platform plataforma;
+        plataforma.tipo = 0;
+        Platform* plataformaP = &plataforma;
+
+        Platform plataforma1;
+        plataforma1.tipo = 1;
+        Platform* plataforma1P = &plataforma1;
+
+        Platform plataforma2;
+        plataforma2.tipo = 2;
+        Platform* plataforma2P = &plataforma2;
+
+        Platform plataforma4;
+        plataforma4.tipo = 3;
+        Platform* plataforma4P = &plataforma4;
+
+        Platform plataforma5;
+        plataforma5.tipo = 3;
+        Platform* plataforma5P = &plataforma5;
+
+        Platform plataforma3;
+        plataforma3.tipo = 2;
+        Platform* plataforma3P = &plataforma3;
+
+        nascimento = platform(lT, aT, 16, 17, 1, 1, nascimentoP, bitmap);
+
+        plataforma = platform(lT, aT, 1, 18, 30, 3, plataformaP, bitmap);
+
+        plataforma1 = platform(lT, aT, 1, 1, 30, 17, plataforma1P, bitmap);
+
+        plataforma2 = platform(lT, aT, 11, 14, 5, 4, plataforma2P, bitmap);
+
+        plataforma4 = platform(lT, aT, 21, 10, 5, 8, plataforma4P, bitmap);
+
+        plataforma5 = platform(lT, aT, 21, 9, 4, 1, plataforma5P, bitmap);
+
+        plataforma3 = platform(lT, aT, 19, 12, 5, 6, plataforma3P, bitmap);
 
         //Iniciando array do jogador
 
@@ -238,7 +287,7 @@ int main() {
 
             //Criando variáveis de plataforma e ponteiro para usar em functions
 
-            Platform plataforma;
+            /*Platform plataforma;
             plataforma.tipo = 0;
             Platform* plataformaP = &plataforma;
 
@@ -260,21 +309,21 @@ int main() {
 
             Platform plataforma3;
             plataforma3.tipo = 2;
-            Platform* plataforma3P = &plataforma3;
+            Platform* plataforma3P = &plataforma3;*/
 
             //Criando cenário com plataformas
 
-            plataforma = platform(lT, aT, 1, 18, 30, 3, plataformaP);
+            /*plataforma = platform(lT, aT, 1, 18, 30, 3, plataformaP, bitmap);
 
-            plataforma1 = platform(lT, aT, 1, 1, 30, 17, plataforma1P);
+            plataforma1 = platform(lT, aT, 1, 1, 30, 17, plataforma1P, bitmap);
 
-            plataforma2 = platform(lT, aT, 11, 14, 5, 4, plataforma2P);
+            plataforma2 = platform(lT, aT, 11, 14, 5, 4, plataforma2P, bitmap);
 
-            plataforma4 = platform(lT, aT, 21, 10, 5, 8, plataforma4P);
+            plataforma4 = platform(lT, aT, 21, 10, 5, 8, plataforma4P, bitmap);
 
-            plataforma5 = platform(lT, aT, 21, 9, 4, 1, plataforma5P);
+            plataforma5 = platform(lT, aT, 21, 9, 4, 1, plataforma5P, bitmap);
 
-            plataforma3 = platform(lT, aT, 19, 12, 5, 6, plataforma3P);
+            plataforma3 = platform(lT, aT, 19, 12, 5, 6, plataforma3P, bitmap);*/
 
             //Criando váriaveis para controle do sistema de vida
 
@@ -374,6 +423,7 @@ int main() {
         al_destroy_timer(timer);
         al_destroy_display(window);
         al_destroy_event_queue(eventQueue);
+        al_destroy_bitmap(bitmap);
 
         return 0;
     }

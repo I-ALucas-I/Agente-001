@@ -1,6 +1,10 @@
 #ifndef BACKGROUND_H
 #define BACKGROUND_H
 
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_image.h>
+
 void background(int *larguraTela, int *alturaTela);
 
 typedef struct {
@@ -10,8 +14,9 @@ typedef struct {
 	int altura;
 	int tipo;
 	int solid;
+	ALLEGRO_BITMAP* grama;
 }Platform;
 
-Platform platform(int* larguraTela, int* alturaTela, int gridY, int gridX, int quantosX, int quantosY, Platform* pl);
+Platform platform(int* larguraTela, int* alturaTela, int gridX, int gridY, int quantosX, int quantosY, Platform* pl, ALLEGRO_BITMAP* bitmap);
 void platformDraw(Platform* pl);
 #endif
