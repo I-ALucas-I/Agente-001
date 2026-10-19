@@ -82,10 +82,12 @@ void playerDraw(Player p[], int quantos) {
         if (p[i].active == true) {
 
             if (i < quantos - 1) {
-                al_draw_filled_rectangle(p[i].x, p[i].y, p[i].x + p[i].largura, p[i].y + p[i].altura * 2, al_map_rgb(255, 100, 0));
+                //al_draw_filled_rectangle(p[i].x, p[i].y, p[i].x + p[i].largura, p[i].y + p[i].altura * 2, al_map_rgb(255, 100, 0));
+                al_draw_bitmap_region(p[i].player, 36, 0, 36, 72, p[i].x, p[i].y, 0);
             }
             else {
-                al_draw_filled_rectangle(p[i].x, p[i].y, p[i].x + p[i].largura, p[i].y + p[i].altura * 2, al_map_rgb(255, 0, 0));
+                //al_draw_filled_rectangle(p[i].x, p[i].y, p[i].x + p[i].largura, p[i].y + p[i].altura * 2, al_map_rgb(255, 0, 0));
+                al_draw_bitmap_region(p[i].player, 0, 0, 36, 72, p[i].x, p[i].y, 0);
             }
         }
     }
@@ -185,7 +187,7 @@ void shot(Shot* left_s, int left_quantos, Shot* right_s, int right_quantos, ALLE
 
 void gunDraw(Mouse* m, Shot* left_s, int left_quantos, Shot* right_s, int right_quantos, Player* p) {
 
-    al_draw_filled_rectangle(p->x + (p->largura / 3), p->y + ((p->altura / 3) * 2), p->x + ((p->largura/3) * 2), p->y + ((p->altura/3) * 3), al_map_rgb(0, 0, 255));
+   // al_draw_filled_rectangle(p->x + (p->largura / 3), p->y + ((p->altura / 3) * 2), p->x + ((p->largura/3) * 2), p->y + ((p->altura/3) * 3), al_map_rgb(0, 0, 255));
 
     al_draw_filled_circle(m->mouseX, m->mouseY, 7.5, al_map_rgb(0, 200, 0));
 

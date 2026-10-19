@@ -19,6 +19,6 @@ void enemieMove(Enemie* e, ALLEGRO_EVENT event) {
 
 void enemieDraw(Enemie* e) {
 
-	al_draw_filled_rectangle(e->x, e->y, e->x + e->largura, e->y + e->altura, al_map_rgb(100, 0, 200));
-
+	//al_draw_filled_rectangle(e->x, e->y, e->x + e->largura, e->y + e->altura, al_map_rgb(100, 0, 200));
+	al_draw_bitmap_region(e->inimigo, 0, 0, 36, 36, e->x, e->y, 0);
 };

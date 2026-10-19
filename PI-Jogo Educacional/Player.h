@@ -25,6 +25,7 @@ typedef struct {
     bool inUse;
     bool used;
     KeyboardPressed keyboard;
+    ALLEGRO_BITMAP* player;
 
 } Player;
 

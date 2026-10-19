@@ -13,6 +13,7 @@ typedef struct {
     float velocidade;
     float velY;
     int mudar;
+    ALLEGRO_BITMAP* inimigo;
 
 } Enemie;
 

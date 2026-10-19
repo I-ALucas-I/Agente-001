@@ -53,7 +53,9 @@ int main() {
     ALLEGRO_TIMER* timer;
     timer = al_create_timer(1.0 / 30.0);
 
-    ALLEGRO_BITMAP* bitmap = al_load_bitmap("agente_001_blocos.png");
+    ALLEGRO_BITMAP* bitmapBlocos = al_load_bitmap("agente_001_blocos.png");
+    ALLEGRO_BITMAP* bitmapInimigos = al_load_bitmap("agente_001_inimigos.png");
+    ALLEGRO_BITMAP* bitmapPlayer = al_load_bitmap("agente_001_player.png");
 
     char caminho[1024];
 
@@ -63,7 +65,7 @@ int main() {
 
     //Verifica se a janela, a fila de eventos e o timer foi criada, se passar começa o código principal
 
-    if (window == NULL || eventQueue == NULL || timer == NULL || bitmap == NULL) {
+    if (window == NULL || eventQueue == NULL || timer == NULL || bitmapBlocos == NULL || bitmapInimigos == NULL) {
         return -1;
     }
     else {
@@ -138,19 +140,19 @@ int main() {
         plataforma3.tipo = 0;
         Platform* plataforma3P = &plataforma3;
 
-        nascimento = platform(lT, aT, 16, 17, 1, 1, nascimentoP, bitmap);
+        nascimento = platform(lT, aT, 16, 17, 1, 1, nascimentoP, bitmapBlocos);
 
-        plataforma = platform(lT, aT, 1, 18, 30, 3, plataformaP, bitmap);
+        plataforma = platform(lT, aT, 1, 18, 30, 3, plataformaP, bitmapBlocos);
 
-        plataforma1 = platform(lT, aT, 1, 1, 30, 17, plataforma1P, bitmap);
+        plataforma1 = platform(lT, aT, 1, 1, 30, 17, plataforma1P, bitmapBlocos);
 
-        plataforma2 = platform(lT, aT, 11, 14, 5, 4, plataforma2P, bitmap);
+        plataforma2 = platform(lT, aT, 11, 14, 5, 4, plataforma2P, bitmapBlocos);
 
-        plataforma4 = platform(lT, aT, 21, 10, 5, 8, plataforma4P, bitmap);
+        plataforma4 = platform(lT, aT, 21, 10, 5, 8, plataforma4P, bitmapBlocos);
 
-        plataforma5 = platform(lT, aT, 21, 9, 4, 1, plataforma5P, bitmap);
+        plataforma5 = platform(lT, aT, 21, 9, 4, 1, plataforma5P, bitmapBlocos);
 
-        plataforma3 = platform(lT, aT, 19, 12, 5, 6, plataforma3P, bitmap);
+        plataforma3 = platform(lT, aT, 19, 12, 5, 6, plataforma3P, bitmapBlocos);
 
         //Iniciando array do jogador
 
@@ -186,6 +188,7 @@ int main() {
             jogador[i].keyboard.a_pressed = false;
             jogador[i].keyboard.d_pressed = false;
             jogador[i].keyboard.w_pressed = false;
+            jogador[i].player = bitmapPlayer;
 
             if (i == 0) {
                 jogador[i].active = true;
@@ -219,6 +222,7 @@ int main() {
         inimigo.velocidade = 4.5;
         inimigo.velY = 0;
         inimigo.mudar = 0;
+        inimigo.inimigo = bitmapInimigos;
         
 
         //Ponteiro para chamar inimigo nas functions
@@ -426,7 +430,9 @@ int main() {
         al_destroy_timer(timer);
         al_destroy_display(window);
         al_destroy_event_queue(eventQueue);
-        al_destroy_bitmap(bitmap);
+        al_destroy_bitmap(bitmapBlocos);
+        al_destroy_bitmap(bitmapInimigos);
+        al_destroy_bitmap(bitmapPlayer);
 
         return 0;
     }
