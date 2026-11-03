@@ -155,10 +155,10 @@
     <ClCompile Include="Background.c" />
     <ClCompile Include="Collision.c" />
     <ClCompile Include="Enemie.c" />
-    <ClCompile Include="Geral.c" />
     <ClCompile Include="Main.c" />
     <ClCompile Include="Player.c" />
     <ClCompile Include="Player.h" />
+    <ClCompile Include="Stages.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -167,6 +167,7 @@
     <ClInclude Include="Background.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Enemie.h" />
+    <ClInclude Include="Stages.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -8,6 +8,7 @@
 void background(int *larguraTela, int *alturaTela);
 
 typedef struct {
+
 	int x;
 	int y;
 	int largura;
@@ -15,6 +16,7 @@ typedef struct {
 	int tipo;
 	int solid;
 	ALLEGRO_BITMAP* bloco;
+
 }Platform;
 
 Platform platform(int* larguraTela, int* alturaTela, int gridX, int gridY, int quantosX, int quantosY, Platform* pl, ALLEGRO_BITMAP* bitmap);

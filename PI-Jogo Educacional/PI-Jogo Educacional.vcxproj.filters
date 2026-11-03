@@ -18,9 +18,6 @@
     <ClCompile Include="Main.c">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="Geral.c">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
     <ClCompile Include="Player.h">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
@@ -36,6 +33,9 @@
     <ClCompile Include="Enemie.c">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
+    <ClCompile Include="Stages.c">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -49,6 +49,9 @@
     </ClInclude>
     <ClInclude Include="Enemie.h">
       <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="Stages.h">
+      <Filter>Arquivos de Origem</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
