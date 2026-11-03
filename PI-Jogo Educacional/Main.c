@@ -57,12 +57,6 @@ int main() {
     ALLEGRO_BITMAP* bitmapInimigos = al_load_bitmap("agente_001_inimigos.png");
     ALLEGRO_BITMAP* bitmapPlayer = al_load_bitmap("agente_001_player.png");
 
-    char caminho[1024];
-
-    if (_getcwd(caminho, sizeof(caminho)) != NULL) {
-        printf("Diretorio atual: %s\n", caminho);
-    }
-
     //Verifica se a janela, a fila de eventos e o timer foi criada, se passar começa o código principal
 
     if (window == NULL || eventQueue == NULL || timer == NULL || bitmapBlocos == NULL || bitmapInimigos == NULL) {
