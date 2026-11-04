@@ -1,0 +1,3 @@
+PM> Get-ChildItem "C:\Users\antonio.lmgomes\source\repos\I-ALucas-I\Agente-001" -Directory -Filter packages -Recurse -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName
+C:\Users\antonio.lmgomes\source\repos\I-ALucas-I\Agente-001\PI-Jogo Educacional\packages
+PM> 
