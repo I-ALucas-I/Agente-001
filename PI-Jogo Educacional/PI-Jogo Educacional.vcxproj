@@ -152,6 +152,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Audio.c" />
     <ClCompile Include="Background.c" />
     <ClCompile Include="Collision.c" />
     <ClCompile Include="Enemie.c" />
@@ -164,6 +165,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Audio.h" />
     <ClInclude Include="Background.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Enemie.h" />

@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Enemie.h"
+#include "Audio.h"
 #include "Background.h"
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
@@ -40,37 +41,39 @@ void plataformCollision(Player* p, Shot* left_s, int left_quantos, Shot* right_s
 
 	if (pl->solid == 0) {
 
-		if (playerE < plataformaDireita && playerD > plataformaEsquerda && playerB > plataformaTopo && playerC < plataformaBaixo){
+		if (playerE < plataformaDireita && playerD > plataformaEsquerda && playerB > plataformaTopo && playerC < plataformaBaixo) {
 			if (playerE >= plataformaDireita - p->velocidade) {
 				p->x = plataformaDireita;
 				p->keyboard.a_pressed = false;
 			}
 		}
 
-		if (playerD > plataformaEsquerda && playerE < plataformaDireita && playerB > plataformaTopo && playerC < plataformaBaixo){
+		if (playerD > plataformaEsquerda && playerE < plataformaDireita && playerB > plataformaTopo && playerC < plataformaBaixo) {
 			if (playerD <= plataformaEsquerda + p->velocidade) {
 				p->x = plataformaEsquerda - p->largura;
 				p->keyboard.d_pressed = false;
 			}
 		}
 
-		if (playerD > plataformaEsquerda && playerE < plataformaDireita && playerBAntes <= plataformaTopo && playerB >= plataformaTopo){
+		if (playerD > plataformaEsquerda && playerE < plataformaDireita && playerBAntes <= plataformaTopo && playerB >= plataformaTopo) {
+			if (p->velY > 1) {
+				al_play_sample(somPuloCaida, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+			}
 			p->y = plataformaTopo - (p->altura * 2);
 			p->velY = 0;
 			p->standing = true;
 		}
 
-		if (playerD > plataformaEsquerda && playerE < plataformaDireita && playerCAntes >= plataformaBaixo && playerC <= plataformaBaixo){
+		if (playerD > plataformaEsquerda && playerE < plataformaDireita && playerCAntes >= plataformaBaixo && playerC <= plataformaBaixo) {
 			p->y = plataformaBaixo;
 			p->velY = 0;
 		}
-	
+
 		for (int i = 0; i < left_quantos; i++) {
 			int leftShotE = 0;
 			int leftShotD = 0;
 			int leftShotC = 0;
 			int leftShotB = 0;
-
 
 			if (left_s[i].leftActive == true && left_s[i].leftUsed == false) {
 				leftShotE = left_s[i].leftShotX - 4.5;
@@ -79,7 +82,6 @@ void plataformCollision(Player* p, Shot* left_s, int left_quantos, Shot* right_s
 				leftShotB = left_s[i].leftShotY + 4.5;
 			};
 
-			
 			if (leftShotE < plataformaDireita && leftShotD > plataformaEsquerda && leftShotB > plataformaTopo && leftShotC < plataformaBaixo) {
 				left_s[i].leftUsed = true;
 			}
@@ -91,7 +93,6 @@ void plataformCollision(Player* p, Shot* left_s, int left_quantos, Shot* right_s
 			int rightShotC = 0;
 			int rightShotB = 0;
 
-
 			if (right_s[i].rightActive == true && right_s[i].rightUsed == false) {
 				rightShotE = right_s[i].rightShotX - 4.5;
 				rightShotD = right_s[i].rightShotX + 4.5;
@@ -99,14 +100,13 @@ void plataformCollision(Player* p, Shot* left_s, int left_quantos, Shot* right_s
 				rightShotB = right_s[i].rightShotY + 4.5;
 			};
 
-
 			if (rightShotE < plataformaDireita && rightShotD > plataformaEsquerda && rightShotB > plataformaTopo && rightShotC < plataformaBaixo) {
 				right_s[i].rightUsed = true;
 			}
 		}
 	}
 };
-
+		
 void enemieCollision(Player p[], int quantosPlayers, Shot* left_s, int left_quantos, Shot* right_s, int right_quantos, int* pa, Enemie* e) {
 
 	int enemieEsquerda = e->x;
@@ -168,6 +168,9 @@ void enemieCollision(Player p[], int quantosPlayers, Shot* left_s, int left_quan
 				}
 
 				if (playerD > enemieEsquerda && playerE < enemieDireita && playerBAntes <= enemieTopo && playerB >= enemieTopo) {
+					if (p[i].velY > 1) {
+						al_play_sample(somPuloCaida, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+					}
 					p[i].y = enemieTopo - (p[i].altura * 2);
 					p[i].velY = 0;
 					p[i].standing = true;
@@ -186,7 +189,6 @@ void enemieCollision(Player p[], int quantosPlayers, Shot* left_s, int left_quan
 		int leftShotD = 0;
 		int leftShotC = 0;
 		int leftShotB = 0;
-
 
 		if (left_s[i].leftActive == true && left_s[i].leftUsed == false) {
 			leftShotE = left_s[i].leftShotX - 4.5;
@@ -219,7 +221,6 @@ void enemieCollision(Player p[], int quantosPlayers, Shot* left_s, int left_quan
 		int rightShotC = 0;
 		int rightShotB = 0;
 
-
 		if (right_s[i].rightActive == true && right_s[i].rightUsed == false) {
 			rightShotE = right_s[i].rightShotX - 4.5;
 			rightShotD = right_s[i].rightShotX + 4.5;
@@ -227,16 +228,14 @@ void enemieCollision(Player p[], int quantosPlayers, Shot* left_s, int left_quan
 			rightShotB = right_s[i].rightShotY + 4.5;
 		};
 
-		
 		if (rightShotE < enemieDireita && rightShotD > enemieEsquerda && rightShotB > enemieTopo && rightShotC < enemieBaixo) {
 
 			right_s[i].rightUsed = true;
 		}
-		
-		
+
 	}
 };
-
+	
 void enemiePlatformCollision(Platform* pl, Enemie* e) {
 
 	int enemieEsquerda = e->x;
