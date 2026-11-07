@@ -4,17 +4,17 @@
 #include <allegro5/keyboard.h>
 #include <allegro5/mouse.h>
 #include <math.h>
-
-
+#include "Audio.h"
 
 void playerMove(Player* p, ALLEGRO_EVENT event) {
     if (p->inUse == true) {
-        
+
         if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
             if (event.keyboard.keycode == ALLEGRO_KEY_W && p->standing == true) {
                 p->keyboard.w_pressed = true;
                 p->velY = -16;
                 p->standing = false;
+                al_play_sample(somPulo, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
             }
             if (event.keyboard.keycode == ALLEGRO_KEY_A && p->keyboard.a_pressed == false) {
                 p->keyboard.a_pressed = true;
@@ -22,7 +22,6 @@ void playerMove(Player* p, ALLEGRO_EVENT event) {
             if (event.keyboard.keycode == ALLEGRO_KEY_D && p->keyboard.d_pressed == false) {
                 p->keyboard.d_pressed = true;
             }
-
         }
 
         if (event.type == ALLEGRO_EVENT_KEY_UP) {
@@ -40,7 +39,6 @@ void playerMove(Player* p, ALLEGRO_EVENT event) {
                 p->keyboard.d_pressed = false;
             }
         }
-        
 
         if (event.type == ALLEGRO_EVENT_TIMER) {
             if (p->keyboard.d_pressed == true) p->x += p->velocidade;
@@ -49,13 +47,9 @@ void playerMove(Player* p, ALLEGRO_EVENT event) {
             p->velY += 1;
 
             p->y += p->velY;
-        
         }
-
     }
-
 };
-
 void playerSystem(Player p[], int quantos, int* pa, ALLEGRO_EVENT event) {
 
     if (p[*pa].inUse == true){
@@ -107,9 +101,9 @@ void gun(Mouse* m, Shot* left_s, int left_quantos, Shot* right_s, int right_quan
     if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) {
         if (event.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT && m->mouse.b_left == true) {
             m->mouse.b_left = false;
-            
+
             for (int i = 0; i < left_quantos; i++) {
-             
+
                 if (left_s[i].leftActive == false) {
 
                     left_s[i].leftShotX = m->gunX;
@@ -121,6 +115,7 @@ void gun(Mouse* m, Shot* left_s, int left_quantos, Shot* right_s, int right_quan
                     left_s[i].leftShotSpdY = sin(leftShotAngle) * 25;
 
                     left_s[i].leftActive = true;
+                    al_play_sample(somArma, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 
                     break;
                 }
@@ -142,26 +137,25 @@ void gun(Mouse* m, Shot* left_s, int left_quantos, Shot* right_s, int right_quan
                     right_s[i].rightShotSpdY = sin(rightShotAngle) * 25;
 
                     right_s[i].rightActive = true;
+                    al_play_sample(somArma, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 
                     break;
                 }
             }
         }
     }
-        
+
     if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
         m->mouseX = event.mouse.x;
         m->mouseY = event.mouse.y;
     }
 
     float angle = atan2(m->mouseY - (p->y + ((p->altura / 3) * 2.5)), m->mouseX - (p->x + (p->largura / 3) * 1.5));
-    
+
     m->gunX = (p->x + (p->largura / 3) * 1.5) + cos(angle) * 30;
     m->gunY = (p->y + (p->altura / 3) * 2.5) + sin(angle) * 30;
 
-    
 };
-
 void shot(Shot* left_s, int left_quantos, Shot* right_s, int right_quantos, ALLEGRO_EVENT event) {
     
     for (int i = 0; i < left_quantos; i++) {

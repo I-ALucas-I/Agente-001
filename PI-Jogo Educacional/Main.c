@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
@@ -9,7 +10,7 @@
 #include "Enemie.h"
 #include "Background.h"
 #include "Collision.h"
-
+#include "Audio.h"
 #include <stdio.h>
 #include <direct.h>
 
@@ -22,6 +23,10 @@ int main() {
     al_init_primitives_addon();
     al_install_mouse();
     al_init_image_addon();
+    al_install_audio();
+    al_init_acodec_addon();
+    al_reserve_samples(8);
+    carregarAudio();
 
     //Criando janela do jogo
 
@@ -427,6 +432,7 @@ int main() {
         al_destroy_bitmap(bitmapBlocos);
         al_destroy_bitmap(bitmapInimigos);
         al_destroy_bitmap(bitmapPlayer);
+        liberarAudio();
 
         return 0;
     }
