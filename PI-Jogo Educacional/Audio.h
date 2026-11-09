@@ -7,7 +7,7 @@ extern ALLEGRO_SAMPLE* somPulo;
 extern ALLEGRO_SAMPLE* somPuloCaida;
 extern ALLEGRO_SAMPLE* somArma;
 
-void carregarAudio(void);
-void liberarAudio(void);
+void carregarAudio();
+void liberarAudio();
 
 #endif

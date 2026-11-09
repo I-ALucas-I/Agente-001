@@ -2,6 +2,7 @@
 #include "Enemie.h"
 #include "Audio.h"
 #include "Background.h"
+#include "Collision.h"
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
 
@@ -293,44 +294,3 @@ void enemiePlatformCollision(Platform* pl, Enemie* e) {
 		}
 	}
 };
-//void enemieShotCollision(Shot s[], int quantos, Enemie* e, int* mudar) {
-//	
-//	for (int i = 0; i < quantos; i++) {
-//		int shotE = 0;
-//		int shotD = 0;
-//		int shotC = 0;
-//		int shotB = 0;
-//
-//
-//		if (s[i].active == true && s[i].used == false) {
-//			shotE = s[i].shotX - 6.5;
-//			shotD = s[i].shotX + 6.5;
-//			shotC = s[i].shotY - 6.5;
-//			shotB = s[i].shotY + 6.5;
-//
-//
-//
-//			int enemieEsquerda = e->x;
-//			int enemieDireita = e->x + e->largura;
-//			int enemieTopo = e->y;
-//			int enemieBaixo = e->y + e->altura;
-//
-//			int larguraTela = 1080;
-//			int alturaTela = 720;
-//
-//			if (*mudar == 0) {
-//				if (shotE < enemieDireita && shotD > enemieEsquerda && shotB > enemieTopo && shotC < enemieBaixo) {
-//
-//					e->x = ((larguraTela / 90) * 3) * 7 - ((larguraTela / 90) * 3);;
-//					e->y = ((alturaTela / 60) * 3) * *mudar - ((alturaTela / 60) * 3);
-//
-//					s[i].used = true;
-//					(*mudar)++;
-//				}
-//			}
-//			else {
-//
-//			}
-//		}
-//	}
-//};

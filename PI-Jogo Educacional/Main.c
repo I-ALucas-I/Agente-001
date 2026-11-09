@@ -58,9 +58,12 @@ int main() {
     ALLEGRO_TIMER* timer;
     timer = al_create_timer(1.0 / 30.0);
 
+    ALLEGRO_BITMAP* bitmapMenu = al_load_bitmap("agente_001_menu.png");
     ALLEGRO_BITMAP* bitmapBlocos = al_load_bitmap("agente_001_blocos.png");
     ALLEGRO_BITMAP* bitmapInimigos = al_load_bitmap("agente_001_inimigos.png");
     ALLEGRO_BITMAP* bitmapPlayer = al_load_bitmap("agente_001_player.png");
+    ALLEGRO_BITMAP* bitmapArmaAgente = al_create_sub_bitmap(bitmapPlayer, 187, 0, 26, 8);
+    ALLEGRO_BITMAP* bitmapArmaRobo = al_create_sub_bitmap(bitmapPlayer, 187, 73, 26, 8);
 
     //Verifica se a janela, a fila de eventos e o timer foi criada, se passar começa o código principal
 
@@ -87,7 +90,7 @@ int main() {
         //Cor do fundo
 
         ALLEGRO_COLOR fundo;
-        fundo = al_map_rgb(0, 0, 0);
+        fundo = al_map_rgb(0, 255, 255);
 
         //Criando evento
 
@@ -119,61 +122,43 @@ int main() {
         plataforma.tipo = 0;
         Platform* plataformaP = &plataforma;
 
-        Platform plataforma1;
+       /* Platform plataforma1;
         plataforma1.tipo = 1;
-        Platform* plataforma1P = &plataforma1;
+        Platform* plataforma1P = &plataforma1;*/
 
         Platform plataforma2;
-        plataforma2.tipo = 0;
+        plataforma2.tipo = 2;
         Platform* plataforma2P = &plataforma2;
 
         Platform plataforma4;
         plataforma4.tipo = 0;
         Platform* plataforma4P = &plataforma4;
 
-        Platform plataforma5;
-        plataforma5.tipo = 0;
-        Platform* plataforma5P = &plataforma5;
-
         Platform plataforma3;
-        plataforma3.tipo = 0;
+        plataforma3.tipo = 2;
         Platform* plataforma3P = &plataforma3;
 
         nascimento = platform(lT, aT, 16, 17, 1, 1, nascimentoP, bitmapBlocos);
 
         plataforma = platform(lT, aT, 1, 18, 30, 3, plataformaP, bitmapBlocos);
 
-        plataforma1 = platform(lT, aT, 1, 1, 30, 17, plataforma1P, bitmapBlocos);
+        //plataforma1 = platform(lT, aT, 1, 1, 30, 17, plataforma1P, bitmapBlocos);
 
-        plataforma2 = platform(lT, aT, 11, 14, 5, 4, plataforma2P, bitmapBlocos);
+        plataforma2 = platform(lT, aT, 11, 14, 5, 1, plataforma2P, bitmapBlocos);
 
         plataforma4 = platform(lT, aT, 21, 10, 5, 8, plataforma4P, bitmapBlocos);
 
-        plataforma5 = platform(lT, aT, 21, 9, 4, 1, plataforma5P, bitmapBlocos);
-
-        plataforma3 = platform(lT, aT, 19, 12, 5, 6, plataforma3P, bitmapBlocos);
+        plataforma3 = platform(lT, aT, 19, 11, 5, 7, plataforma3P, bitmapBlocos);
 
         //Iniciando array do jogador
 
         Player jogador[3];
         int quantosPlayers = 3;
-        //                          coordenada na grid
-        // 
-        //                                   |
-        //                                   V
-        //
-        /*jogador.x = ((larguraTela/90) * 3) * 3 - ((larguraTela / 90) * 3);
-        jogador.y = ((alturaTela / 60) * 3) * 16 - ((alturaTela / 60) * 3);
-        jogador.largura = (larguraTela / 90) * 3;
-        jogador.altura = (alturaTela / 60) * 3;
-        jogador.velocidade = 6;
-        jogador.velY = 0;
-        jogador.standing = true;
-        jogador.keyboard.a_pressed = false;
-        jogador.keyboard.d_pressed = false;
-        jogador.keyboard.w_pressed = false;*/
-
+        
         for (int i = 0; i < quantosPlayers; i++) {
+            //                                coordenada na grid
+            //                                        |
+            //                                        V
             jogador[i].x = ((larguraTela / 90) * 3) * 3 - ((larguraTela / 90) * 3);
             jogador[i].y = ((alturaTela / 60) * 3) * 16 - ((alturaTela / 60) * 3);
             jogador[i].largura = (larguraTela / 90) * 3;
@@ -187,17 +172,23 @@ int main() {
             jogador[i].keyboard.a_pressed = false;
             jogador[i].keyboard.d_pressed = false;
             jogador[i].keyboard.w_pressed = false;
+            jogador[i].olhar = 1;
+            jogador[i].anima = 1;
+            jogador[i].quadro = 0;
             jogador[i].player = bitmapPlayer;
+            jogador[i].gun = bitmapArmaRobo;
+
 
             if (i == 0) {
+
                 jogador[i].active = true;
                 jogador[i].inUse = true;
                 jogador[i].x = nascimento.x + (nascimento.largura / 6 * 2);
-
                 jogador[i].y = nascimento.y - (jogador[0].altura * 2);
             }
             if (i == quantosPlayers - 1) {
                 jogador[i].active = true;
+                jogador[i].gun = bitmapArmaAgente;
             }
         }
 
@@ -209,11 +200,9 @@ int main() {
         //Iniciando inimigo
 
         Enemie inimigo;
-        //                          coordenada na grid
-        // 
-        //                                   |
-        //                                   V
-        //
+        //                            coordenada na grid
+        //                                     |
+        //                                     V
         inimigo.x = ((larguraTela / 90) * 3) * 7 - ((larguraTela / 90) * 3);
         inimigo.y = ((alturaTela / 60) * 3) * 17 - ((alturaTela / 60) * 3);
         inimigo.largura = (larguraTela / 90) * 3;
@@ -269,6 +258,7 @@ int main() {
         //Põe o muse no meio da tela
 
         al_set_mouse_xy(window, mouse.mouseX, mouse.mouseY);
+        al_hide_mouse_cursor(window);
 
         //looping de jogo principal
 
@@ -285,47 +275,7 @@ int main() {
             //Chamando funtion de background/grid
             
             background(lT, aT);
-
-            //Criando variáveis de plataforma e ponteiro para usar em functions
-
-            /*Platform plataforma;
-            plataforma.tipo = 0;
-            Platform* plataformaP = &plataforma;
-
-            Platform plataforma1;
-            plataforma1.tipo = 1;
-            Platform* plataforma1P = &plataforma1;
-
-            Platform plataforma2;
-            plataforma2.tipo = 2;
-            Platform* plataforma2P = &plataforma2;
-
-            Platform plataforma4;
-            plataforma4.tipo = 3;
-            Platform* plataforma4P = &plataforma4;
-
-            Platform plataforma5;
-            plataforma5.tipo = 3;
-            Platform* plataforma5P = &plataforma5;
-
-            Platform plataforma3;
-            plataforma3.tipo = 2;
-            Platform* plataforma3P = &plataforma3;*/
-
-            //Criando cenário com plataformas
-
-            /*plataforma = platform(lT, aT, 1, 18, 30, 3, plataformaP, bitmap);
-
-            plataforma1 = platform(lT, aT, 1, 1, 30, 17, plataforma1P, bitmap);
-
-            plataforma2 = platform(lT, aT, 11, 14, 5, 4, plataforma2P, bitmap);
-
-            plataforma4 = platform(lT, aT, 21, 10, 5, 8, plataforma4P, bitmap);
-
-            plataforma5 = platform(lT, aT, 21, 9, 4, 1, plataforma5P, bitmap);
-
-            plataforma3 = platform(lT, aT, 19, 12, 5, 6, plataforma3P, bitmap);*/
-
+            
             //Criando váriaveis para controle do sistema de vida
 
             int playerAnterior = playerAtual;
@@ -349,17 +299,16 @@ int main() {
                 p->standing = false;
 
                 plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataformaP);
-                plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma1P);
+               // plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma1P);
                 plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma2P);
                 plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma3P);
                 plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma4P);
-                plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma5P);
                 plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, nascimentoP);
                 enemieCollision(jogador, quantosPlayers, left_s, leftShotQuantos, right_s, rightShotQuantos, pa, e);
+                enemiePlatformCollision(nascimentoP, e);
                 enemiePlatformCollision(plataformaP, e);
                 enemiePlatformCollision(plataforma2P, e);
                 enemiePlatformCollision(plataforma3P, e);
-                //enemieShotCollision(s, quantos, e, mu);
             }
 
             //Criando robôs do player na plataforma de nascimento
@@ -370,12 +319,9 @@ int main() {
 
                 if (playerAtual != quantosPlayers - 1) {
 
-                    p->x = nascimento.x
-                        + nascimento.largura / 2
-                        - p->largura / 2;
+                    p->x = nascimento.x + nascimento.largura / 2 - p->largura / 2;
 
-                    p->y = nascimento.y
-                        - p->altura * 2;
+                    p->y = nascimento.y - p->altura * 2;
                 }
                 
             }
@@ -383,10 +329,9 @@ int main() {
             //Desenhando plataformas
 
             platformDraw(plataformaP, 30, 3);
-            platformDraw(plataforma1P, 0, 0);
-            platformDraw(plataforma2P, 5, 5);
-            platformDraw(plataforma4P, 5, 9);
-            platformDraw(plataforma5P, 4, 2);
+            //platformDraw(plataforma1P, 0, 0);
+            platformDraw(plataforma2P, 5, 4);
+            platformDraw(plataforma4P, 5, 8);
             platformDraw(plataforma3P, 5, 7);
             platformDraw(nascimentoP, 0, 0);
             
@@ -437,3 +382,110 @@ int main() {
         return 0;
     }
 }
+
+
+
+
+//#include <stdlib.h>
+//#include <allegro5/allegro.h>
+//#include <allegro5/allegro_font.h>
+//#include <allegro5/allegro_primitives.h>
+//#include <allegro5/allegro_image.h>
+//
+//#include "Game.h"
+//#include "stages.h"
+//#include "Audio.h"
+//
+//int main() {
+//
+//    al_init();
+//    al_install_keyboard();
+//    al_install_mouse();
+//
+//    al_init_primitives_addon();
+//    al_init_image_addon();
+//    al_init_font_addon();
+//
+//    Jogo jogo = { 0 };
+//
+//    jogo.larguraTela = 1080;
+//    jogo.alturaTela = 720;
+//
+//    al_set_new_display_flags(ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE);
+//
+//    jogo.window = al_create_display(
+//        jogo.larguraTela,
+//        jogo.alturaTela
+//    );
+//
+//    jogo.eventQueue = al_create_event_queue();
+//    jogo.timer = al_create_timer(1.0 / 30.0);
+//
+//    jogo.font = al_create_builtin_font();
+//
+//    jogo.bitmapMenu = al_load_bitmap("agente_001_menu.png");
+//    jogo.bitmapBlocos = al_load_bitmap("agente_001_blocos.png");
+//    jogo.bitmapInimigos = al_load_bitmap("agente_001_inimigos.png");
+//    jogo.bitmapPlayer = al_load_bitmap("agente_001_player.png");
+//
+//    if (!jogo.window || !jogo.eventQueue || !jogo.timer ||
+//        !jogo.font || !jogo.bitmapBlocos ||
+//        !jogo.bitmapInimigos || !jogo.bitmapPlayer) {
+//
+//        return -1;
+//    }
+//
+//    jogo.bitmapArmaAgente =
+//        al_create_sub_bitmap(jogo.bitmapPlayer, 187, 0, 26, 8);
+//
+//    jogo.bitmapArmaRobo =
+//        al_create_sub_bitmap(jogo.bitmapPlayer, 187, 73, 26, 8);
+//
+//    al_register_event_source(
+//        jogo.eventQueue,
+//        al_get_display_event_source(jogo.window)
+//    );
+//
+//    al_register_event_source(
+//        jogo.eventQueue,
+//        al_get_timer_event_source(jogo.timer)
+//    );
+//
+//    al_register_event_source(
+//        jogo.eventQueue,
+//        al_get_keyboard_event_source()
+//    );
+//
+//    al_register_event_source(
+//        jogo.eventQueue,
+//        al_get_mouse_event_source()
+//    );
+//
+//    al_set_window_title(jogo.window, "Agente 001");
+//
+//    al_start_timer(jogo.timer);
+//
+//    carregarAudio();
+//
+//    // Inicia o controlador do jogo
+//    menu(&jogo);
+//
+//    // Liberação dos recursos
+//    liberarAudio();
+//
+//    al_destroy_bitmap(jogo.bitmapArmaAgente);
+//    al_destroy_bitmap(jogo.bitmapArmaRobo);
+//
+//    al_destroy_bitmap(jogo.bitmapMenu);
+//    al_destroy_bitmap(jogo.bitmapBlocos);
+//    al_destroy_bitmap(jogo.bitmapInimigos);
+//    al_destroy_bitmap(jogo.bitmapPlayer);
+//
+//    al_destroy_font(jogo.font);
+//
+//    al_destroy_timer(jogo.timer);
+//    al_destroy_event_queue(jogo.eventQueue);
+//    al_destroy_display(jogo.window);
+//
+//    return 0;
+//}

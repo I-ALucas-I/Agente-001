@@ -157,6 +157,8 @@
     <ClCompile Include="Collision.c" />
     <ClCompile Include="Enemie.c" />
     <ClCompile Include="Main.c" />
+    <ClCompile Include="Game.h" />
+    <ClCompile Include="Menu.c" />
     <ClCompile Include="Player.c" />
     <ClCompile Include="Player.h" />
     <ClCompile Include="Stages.c" />

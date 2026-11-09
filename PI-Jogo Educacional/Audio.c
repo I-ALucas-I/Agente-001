@@ -5,7 +5,7 @@ ALLEGRO_SAMPLE* somPulo = NULL;
 ALLEGRO_SAMPLE* somPuloCaida = NULL;
 ALLEGRO_SAMPLE* somArma = NULL;
 
-void carregarAudio(void) {
+void carregarAudio() {
 
     somPulo = al_load_sample("pulo.wav");
     somPuloCaida = al_load_sample("pulo_caida.wav");
@@ -16,7 +16,7 @@ void carregarAudio(void) {
     }
 }
 
-void liberarAudio(void) {
+void liberarAudio() {
 
     al_destroy_sample(somPulo);
     al_destroy_sample(somPuloCaida);

@@ -24,8 +24,12 @@ typedef struct {
     bool active;
     bool inUse;
     bool used;
+    int olhar;
+    int anima;
+    int quadro;
     KeyboardPressed keyboard;
     ALLEGRO_BITMAP* player;
+    ALLEGRO_BITMAP* gun;
 
 } Player;
 
@@ -42,6 +46,7 @@ typedef struct {
     int mouseY;
     int gunX;
     int gunY;
+    float angle;
     MousePressed mouse;
 
 }Mouse;

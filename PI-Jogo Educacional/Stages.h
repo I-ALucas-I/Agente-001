@@ -1,23 +1,52 @@
-#ifndef STAGE_H
-#define STAGE_H
+//#ifndef STAGE_H
+//#define STAGE_H
+//
+//#include <allegro5/allegro.h>
+//#include <allegro5/allegro_primitives.h>
+//#include <allegro5/allegro_image.h>
+//
+//typedef enum {
+//
+//	MENU_INICIAL,
+//	MENU_CONFIG,
+//	MENU_FASES,
+//	MENU_VITORIA,
+//	MENU_PAUSE,
+//	MENU_CODE,
+//	MENU_DERROTA
+//
+//}Tela;
+//
+//void menu(Tela tela);
+//void stage(int fase, int subfase);
+//
+//#endif
+//
 
-#include <allegro5/allegro.h>
-#include <allegro5/allegro_primitives.h>
-#include <allegro5/allegro_image.h>
+#ifndef STAGES_H
+#define STAGES_H
+
+#include "Game.h"
 
 typedef enum {
+    MENU_INICIAL,
+    MENU_CONFIG,
+    MENU_FASES,
+    MENU_VITORIA,
+    MENU_PAUSE,
+    MENU_CODE,
+    MENU_DERROTA
+} Tela;
 
-	MENU_INICIAL,
-	MENU_CONFIG,
-	MENU_FASES,
-	MENU_PRÓXIMA_FASE,
-	MENU_PAUSE,
-	MENU_CODE
+typedef enum {
+    FASE_CONCLUIDA,
+    FASE_PERDIDA,
+    FASE_PAUSADA,
+    FASE_ABANDONADA
+} ResultadoFase;
 
-}tela;
+void menu(Jogo* jogo);
 
-void menu(tela tela);
-void stage(int fase, int subfase);
+ResultadoFase stage(Jogo* jogo, int fase, int subfase);
 
 #endif
-

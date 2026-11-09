@@ -44,10 +44,10 @@ Platform platform(int* larguraTela, int* alturaTela, int gridX, int gridY, int q
 	if (pl->tipo == 0) { //Bloco de grama
 		pl->solid = 0;
 	}
-	if (pl->tipo == 1) {
+	if (pl->tipo == 1) { 
 		pl->solid = 1;
 	}
-	if (pl->tipo == 2) {
+	if (pl->tipo == 2) { //Plataforma de madeira
 		pl->solid = 0;
 	}
 	if (pl->tipo == 3) {
@@ -59,11 +59,6 @@ Platform platform(int* larguraTela, int* alturaTela, int gridX, int gridY, int q
 		pl->largura = (xInicial * 3) * (gridX + 2) - pl->x;
 		pl->altura = (yInicial * 3) * gridY - pl->y;
 	}
-
-
-	/*al_draw_filled_circle(pl->x, pl->y, 10, al_map_rgb(255, 100, 150));
-	al_draw_filled_circle((xInicial * 3) * gridX - (xInicial * 3), (yInicial * 3) * gridY - (yInicial * 3), 10, al_map_rgb(255, 100, 150));
-	al_draw_filled_circle((xInicial * 3) * gridX, (yInicial * 3) * gridY, 10, al_map_rgb(255, 255, 0));*/
 
 	return *pl;
 };
@@ -77,8 +72,10 @@ void platformDraw(Platform* pl, int quantosX, int quantosY) {
 				int imagemX = pl->x + j * 36;
 				int imagemY = pl->y + i * 36;
 
-				if (i == 0) al_draw_bitmap_region(pl->bloco, 0, 0, 36, 36, imagemX, imagemY, 0);
-				else al_draw_bitmap_region(pl->bloco, 36, 0, 36, 36, imagemX, imagemY, 0);
+				if (i == 0 && j == 0) al_draw_bitmap_region(pl->bloco, 0, 0, 36, 36, imagemX, imagemY, 0);
+				else if (i == 0 && j == quantosX - 1) al_draw_bitmap_region(pl->bloco, 0, 0, 36, 36, imagemX, imagemY, ALLEGRO_FLIP_HORIZONTAL);
+				else if (i == 0) al_draw_bitmap_region(pl->bloco, 36, 0, 36, 36, imagemX, imagemY, 0);
+				else al_draw_bitmap_region(pl->bloco, 72, 0, 36, 36, imagemX, imagemY, 0);
 
 			}
 		}
@@ -88,15 +85,27 @@ void platformDraw(Platform* pl, int quantosX, int quantosY) {
 		
 	}
 	if (pl->tipo == 2) {
-		al_draw_filled_rectangle(pl->x, pl->y, pl->x + pl->largura, pl->y + pl->altura, al_map_rgb(255, 0, 255));
+		for (int i = 0; i < quantosY; i++) {
+			for (int j = 0; j < quantosX; j++) {
+
+				int imagemX = pl->x + j * 36;
+				int imagemY = pl->y + i * 36;
+
+				if (i == 0 && j == 0) al_draw_bitmap_region(pl->bloco, 0, 36, 36, 36, imagemX, imagemY, 0);
+				else if (i == 0 && j == quantosX - 1) al_draw_bitmap_region(pl->bloco, 0, 36, 36, 36, imagemX, imagemY, ALLEGRO_FLIP_HORIZONTAL);
+				else if (i == 0) al_draw_bitmap_region(pl->bloco, 36, 36, 36, 36, imagemX, imagemY, 0);
+				else if (j == 0) al_draw_bitmap_region(pl->bloco, 72, 36, 36, 36, imagemX, imagemY, 0);
+				else if (j == quantosX - 1) al_draw_bitmap_region(pl->bloco, 72, 36, 36, 36, imagemX, imagemY, ALLEGRO_FLIP_HORIZONTAL);
+				else al_draw_bitmap_region(pl->bloco, 108, 36, 36, 36, imagemX, imagemY, 0);
+
+			}
+		}
 		
 	}
 	if (pl->tipo == 3) {
-		al_draw_filled_rectangle(pl->x, pl->y, pl->x + pl->largura, pl->y + pl->altura, al_map_rgb(0, 0, 255));
-		
+		al_draw_bitmap_region(pl->bloco, 0, 0, 1080, 720, pl->x, pl->y, 0);
 	}
 	if (pl->tipo == 4) {
-		al_draw_filled_rectangle(pl->x, pl->y, pl->x + pl->largura, pl->y + pl->altura, al_map_rgb(240, 167, 58));
-		
+		al_draw_bitmap_region(pl->bloco, 0, 72, 108, 36, pl->x, pl->y, 0);
 	}
 };

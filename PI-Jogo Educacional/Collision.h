@@ -10,7 +10,4 @@ void enemieCollision(Player p[], int quantosPlayers, Shot* left_s, int left_quan
 void enemiePlatformCollision(Platform* pl, Enemie* e);
 void enemieShotCollision(Shot* s[], int quantos, Enemie* e, int* mudar);
 
-
-
-
 #endif
