@@ -156,6 +156,7 @@
     <ClCompile Include="Background.c" />
     <ClCompile Include="Collision.c" />
     <ClCompile Include="Enemie.c" />
+    <ClCompile Include="Starting.h" />
     <ClCompile Include="Main.c" />
     <ClCompile Include="Game.h" />
     <ClCompile Include="Menu.c" />
@@ -171,6 +172,7 @@
     <ClInclude Include="Background.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Enemie.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Stages.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

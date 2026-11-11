@@ -1,161 +1,78 @@
-//#include <stdio.h>
-//#include "stages.h"
-//
-//void menu(Jogo* jogo) {
-//
-//    Tela telaAtual = MENU_INICIAL;
-//
-//    bool executando = true;
-//
-//    while (executando) {
-//
-//        ALLEGRO_EVENT evento;
-//
-//        al_wait_for_event(jogo->eventQueue, &evento);
-//
-//        if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-//            executando = false;
-//        }
-//
-//        if (evento.type == ALLEGRO_EVENT_KEY_DOWN) {
-//
-//            if (evento.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
-//
-//                if (telaAtual == MENU_INICIAL) {
-//                    executando = false;
-//                }
-//                else {
-//                    telaAtual = MENU_INICIAL;
-//                }
-//            }
-//
-//            if (telaAtual == MENU_INICIAL) {
-//
-//                if (evento.keyboard.keycode == ALLEGRO_KEY_ENTER) {
-//                    telaAtual = MENU_FASES;
-//                }
-//
-//                if (evento.keyboard.keycode == ALLEGRO_KEY_C) {
-//                    telaAtual = MENU_CONFIG;
-//                }
-//            }
-//
-//            else if (telaAtual == MENU_FASES) {
-//
-//                if (evento.keyboard.keycode == ALLEGRO_KEY_1) {
-//
-//                    ResultadoFase resultado =
-//                        stage(jogo, 2, 1);
-//
-//                    if (resultado == FASE_CONCLUIDA) {
-//                        telaAtual = MENU_VITORIA;
-//                    }
-//                    else if (resultado == FASE_PERDIDA) {
-//                        telaAtual = MENU_DERROTA;
-//                    }
-//                    else {
-//                        telaAtual = MENU_INICIAL;
-//                    }
-//                }
-//            }
-//
-//            else if (telaAtual == MENU_VITORIA ||
-//                telaAtual == MENU_DERROTA) {
-//
-//                if (evento.keyboard.keycode == ALLEGRO_KEY_ENTER) {
-//                    telaAtual = MENU_FASES;
-//                }
-//            }
-//        }
-//
-//        if (evento.type == ALLEGRO_EVENT_TIMER) {
-//
-//            al_clear_to_color(al_map_rgb(20, 20, 30));
-//
-//            switch (telaAtual) {
-//
-//            case MENU_INICIAL:
-//
-//                al_draw_text(
-//                    jogo->font,
-//                    al_map_rgb(255, 255, 255),
-//                    jogo->larguraTela / 2,
-//                    jogo->alturaTela / 3,
-//                    ALLEGRO_ALIGN_CENTER,
-//                    "AGENTE 001"
-//                );
-//
-//                al_draw_text(
-//                    jogo->font,
-//                    al_map_rgb(255, 255, 255),
-//                    jogo->larguraTela / 2,
-//                    jogo->alturaTela / 2,
-//                    ALLEGRO_ALIGN_CENTER,
-//                    "ENTER - JOGAR"
-//                );
-//
-//                al_draw_text(
-//                    jogo->font,
-//                    al_map_rgb(255, 255, 255),
-//                    jogo->larguraTela / 2,
-//                    jogo->alturaTela / 2 + 40,
-//                    ALLEGRO_ALIGN_CENTER,
-//                    "C - CONFIGURACOES"
-//                );
-//
-//                break;
-//
-//            case MENU_FASES:
-//
-//                al_draw_text(
-//                    jogo->font,
-//                    al_map_rgb(255, 255, 255),
-//                    jogo->larguraTela / 2,
-//                    jogo->alturaTela / 2,
-//                    ALLEGRO_ALIGN_CENTER,
-//                    "1 - FASE 2, SUBFASE 1"
-//                );
-//
-//                break;
-//
-//            case MENU_CONFIG:
-//                al_draw_text(
-//                    jogo->font,
-//                    al_map_rgb(255, 255, 255),
-//                    jogo->larguraTela / 2,
-//                    jogo->alturaTela / 2,
-//                    ALLEGRO_ALIGN_CENTER,
-//                    "CONFIGURACOES"
-//                );
-//                break;
-//
-//            case MENU_VITORIA:
-//                al_draw_text(
-//                    jogo->font,
-//                    al_map_rgb(0, 255, 0),
-//                    jogo->larguraTela / 2,
-//                    jogo->alturaTela / 2,
-//                    ALLEGRO_ALIGN_CENTER,
-//                    "FASE CONCLUIDA!"
-//                );
-//                break;
-//
-//            case MENU_DERROTA:
-//                al_draw_text(
-//                    jogo->font,
-//                    al_map_rgb(255, 0, 0),
-//                    jogo->larguraTela / 2,
-//                    jogo->alturaTela / 2,
-//                    ALLEGRO_ALIGN_CENTER,
-//                    "VOCE PERDEU!"
-//                );
-//                break;
-//
-//            default:
-//                break;
-//            }
-//
-//            al_flip_display();
-//        }
-//    }
-//}
+#include <stdio.h>
+#include "Menu.h"
+#include "Starting.h"
+#include "Player.h"
+#include "stages.h"
+
+void menuControl(Game* jogo, Mouse* m) {
+
+    Screen menu = MENU_INICIAL;
+
+    bool executando = true;
+
+    while (executando) {
+
+        al_clear_to_color(al_map_rgb(255, 255, 255));
+        al_wait_for_event(jogo->eventQueue, &jogo->event);
+
+        if (jogo->event.type == ALLEGRO_EVENT_MOUSE_AXES) {
+            m->mouseX = jogo->event.mouse.x;
+            m->mouseY = jogo->event.mouse.y;
+        }
+
+        if (menu == MENU_INICIAL) {
+         
+            if (jogo->event.type == ALLEGRO_EVENT_DISPLAY_CLOSE || (jogo->event.type == ALLEGRO_EVENT_KEY_DOWN && jogo->event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)) {
+                executando = false;
+            }
+
+            al_draw_bitmap_region(jogo->bitmapMenu, 0, 0, 1080, 720, 0, 0, 0);
+
+            if (m->mouseX >= 140 && m->mouseX <= 140 + 71 && m->mouseY >= 383 && m->mouseY <= 383 + 12 && (jogo->event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && jogo->event.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT)) menu = MENU_FASES;
+            if (m->mouseX >= 140 && m->mouseX <= 140 + 71 && m->mouseY >= 398 && m->mouseY <= 398 + 12 && (jogo->event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && jogo->event.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT)) menu = MENU_CONFIG;
+            if (m->mouseX >= 140 && m->mouseX <= 140 + 71 && m->mouseY >= 413 && m->mouseY <= 413 + 12 && (jogo->event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && jogo->event.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT)) menu = MENU_CONTROLS;
+        }
+
+        if (menu == MENU_FASES) {
+
+            if (jogo->event.type == ALLEGRO_EVENT_KEY_DOWN && jogo->event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
+                menu = MENU_INICIAL;
+            }
+
+            al_draw_bitmap_region(jogo->bitmapMenu, 0, 0, 1080, 720, 0, 0, 0);
+            al_draw_bitmap_region(jogo->bitmapMenu, 1080, 0, 330, 194, 140 + 71, 201, 0);
+
+            if (m->mouseX >= 279 && m->mouseX <= 279 + 43 && m->mouseY >= 239 && m->mouseY <= 239 + 25 && (jogo->event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && jogo->event.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT)) stage(jogo, m, 1);
+            if (m->mouseX >= 329 && m->mouseX <= 329 + 43 && m->mouseY >= 239 && m->mouseY <= 239 + 25 && (jogo->event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && jogo->event.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT)) menu = MENU_CONFIG;
+            if (m->mouseX >= 379 && m->mouseX <= 379 + 43 && m->mouseY >= 239 && m->mouseY <= 239 + 25 && (jogo->event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && jogo->event.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT)) menu = MENU_CONFIG;
+            if (m->mouseX >= 429 && m->mouseX <= 429 + 43 && m->mouseY >= 239 && m->mouseY <= 239 + 25 && (jogo->event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && jogo->event.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT)) menu = MENU_CONFIG;
+            if (m->mouseX >= 479 && m->mouseX <= 479 + 43 && m->mouseY >= 239 && m->mouseY <= 239 + 25 && (jogo->event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN && jogo->event.mouse.button == ALLEGRO_MOUSE_BUTTON_LEFT)) menu = MENU_CONFIG;
+
+        }
+
+        if (menu == MENU_CONFIG) {
+        
+            if (jogo->event.type == ALLEGRO_EVENT_KEY_DOWN && jogo->event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
+                menu = MENU_INICIAL;
+            }
+
+            al_draw_bitmap_region(jogo->bitmapMenu, 0, 0, 1080, 720, 0, 0, 0);
+            al_draw_bitmap_region(jogo->bitmapMenu, 1080, 195, 153, 194, 140 + 71, 216, 0);
+        }
+
+        if (menu == MENU_CONTROLS) {
+
+            if (jogo->event.type == ALLEGRO_EVENT_KEY_DOWN && jogo->event.keyboard.keycode == ALLEGRO_KEY_ESCAPE) {
+                menu = MENU_INICIAL;
+            }
+
+            al_draw_bitmap_region(jogo->bitmapMenu, 0, 0, 1080, 720, 0, 0, 0);
+            al_draw_bitmap_region(jogo->bitmapMenu, 1080, 195, 153, 194, 140 + 71, 231, 0);
+        }
+
+        al_draw_bitmap_region(jogo->bitmapMenu, 1235, 197, 9, 12, m->mouseX, m->mouseY, 0);
+        
+        al_flip_display();
+        
+    }
+}

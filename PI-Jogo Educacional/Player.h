@@ -27,11 +27,12 @@ typedef struct {
     int olhar;
     int anima;
     int quadro;
+    int playerAtual;
     KeyboardPressed keyboard;
     ALLEGRO_BITMAP* player;
     ALLEGRO_BITMAP* gun;
 
-} Player;
+}Player;
 
 typedef struct {
 

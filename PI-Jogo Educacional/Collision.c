@@ -33,12 +33,12 @@ void plataformCollision(Player* p, Shot* left_s, int left_quantos, Shot* right_s
 		}
 	}
 
-	if (playerD > 0 && playerE < larguraTela && playerB > 0 && playerC < alturaTela) {
+	/*if (playerD > 0 && playerE < larguraTela && playerB > 0 && playerC < alturaTela) {
 		if (playerD >= larguraTela + p->velocidade) {
 			p->x = larguraTela - p->largura;
 			p->keyboard.d_pressed = false;
 		}
-	}
+	}*/
 
 	if (pl->solid == 0) {
 

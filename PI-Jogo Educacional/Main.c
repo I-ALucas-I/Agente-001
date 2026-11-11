@@ -1,16 +1,20 @@
 #include <stdlib.h>
-#include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro.h>
-#include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_acodec.h>
+#include <allegro5/allegro_font.h>
 #include <allegro5/keyboard.h>
 #include <allegro5/mouse.h>
 #include <allegro5/allegro_image.h>
+
 #include "Player.h"
 #include "Enemie.h"
 #include "Background.h"
 #include "Collision.h"
 #include "Audio.h"
+#include "Starting.h"
+#include "Menu.h"
+
 #include <stdio.h>
 #include <direct.h>
 
@@ -28,355 +32,206 @@ int main() {
     al_reserve_samples(8);
     carregarAudio();
 
+    Game jogo;
+    Game* ponteiroJogo = &jogo;
     //Criando janela do jogo
 
     al_set_new_display_flags(ALLEGRO_WINDOWED | ALLEGRO_RESIZABLE /* | ALLEGRO_MAXIMIZED */ );
 
-    ALLEGRO_DISPLAY* window;
+    jogo.window;
     
-    int larguraTela = 1080;
-    int alturaTela = 720;
-    
-    window = al_create_display(larguraTela, alturaTela);
+    jogo.width = 1080;
+    jogo.height = 720;
 
-    //Ponteiros para chamar váriaveis nas functions
-
-    int* lT = &larguraTela;
-    int* aT = &alturaTela;
+    jogo.window = al_create_display(jogo.width, jogo.height);
 
     //Nome da janela
 
-    al_set_window_title(window, "Agente 001");
+    al_set_window_title(jogo.window, "Agente 001");
 
     //Criando fila de eventos
 
-    ALLEGRO_EVENT_QUEUE* eventQueue;
-    eventQueue = al_create_event_queue();
+    jogo.eventQueue;
+    jogo.eventQueue = al_create_event_queue();
 
     //Criando timer
 
-    ALLEGRO_TIMER* timer;
-    timer = al_create_timer(1.0 / 30.0);
+    jogo.timer;
+    jogo.timer = al_create_timer(1.0 / 30.0);
 
-    ALLEGRO_BITMAP* bitmapMenu = al_load_bitmap("agente_001_menu.png");
-    ALLEGRO_BITMAP* bitmapBlocos = al_load_bitmap("agente_001_blocos.png");
-    ALLEGRO_BITMAP* bitmapInimigos = al_load_bitmap("agente_001_inimigos.png");
-    ALLEGRO_BITMAP* bitmapPlayer = al_load_bitmap("agente_001_player.png");
-    ALLEGRO_BITMAP* bitmapArmaAgente = al_create_sub_bitmap(bitmapPlayer, 187, 0, 26, 8);
-    ALLEGRO_BITMAP* bitmapArmaRobo = al_create_sub_bitmap(bitmapPlayer, 187, 73, 26, 8);
+    jogo.bitmapMenu = al_load_bitmap("agente_001_menu.png");
+    jogo.bitmapBackground = al_load_bitmap("agente_001_background.png");
+    jogo.bitmapBlocos = al_load_bitmap("agente_001_blocos.png");
+    jogo.bitmapInimigos = al_load_bitmap("agente_001_inimigos.png");
+    jogo.bitmapPlayer = al_load_bitmap("agente_001_player.png");
+    jogo.bitmapArmaAgente = al_create_sub_bitmap(jogo.bitmapPlayer, 187, 0, 26, 8);
+    jogo.bitmapArmaRobo = al_create_sub_bitmap(jogo.bitmapPlayer, 187, 73, 26, 8);
 
     //Verifica se a janela, a fila de eventos e o timer foi criada, se passar começa o código principal
 
-    if (window == NULL || eventQueue == NULL || timer == NULL || bitmapBlocos == NULL || bitmapInimigos == NULL) {
-        return -1;
+    if (jogo.window == NULL) {
+        return -31;
     }
+    else if (jogo.eventQueue == NULL) return -2;
+    else if (jogo.timer == NULL) return -3;
+    else if (jogo.bitmapMenu == NULL) - 4;
+    else if (jogo.bitmapBlocos == NULL) - 5;
+    else if (jogo.bitmapInimigos == NULL) - 6;
+    else if (jogo.bitmapPlayer == NULL) - 7;
+    else if (jogo.bitmapArmaAgente == NULL) - 8;
+    else if (jogo.bitmapArmaRobo == NULL) - 9;
     else {
 
         //Assoiciando fila de eventos a tipos de evento
 
-        al_register_event_source(eventQueue, al_get_display_event_source(window));
-        al_register_event_source(eventQueue, al_get_timer_event_source(timer));
-        al_register_event_source(eventQueue, al_get_keyboard_event_source());
-        al_register_event_source(eventQueue, al_get_mouse_event_source());
+        al_register_event_source(jogo.eventQueue, al_get_display_event_source(jogo.window));
+        al_register_event_source(jogo.eventQueue, al_get_timer_event_source(jogo.timer));
+        al_register_event_source(jogo.eventQueue, al_get_keyboard_event_source());
+        al_register_event_source(jogo.eventQueue, al_get_mouse_event_source());
+
+        Mouse mouse;
+        
+        mouse.mouseX = jogo.width / 2;
+        mouse.mouseY = jogo.height / 2;
+        mouse.mouse.b_left = false;
+        mouse.mouse.b_right = false;
+        
+        //Ponteiro para chamar mouse nas functions
+        
+        Mouse* m = &mouse;
+
+        //Põe o mouse no meio da tela
+            
+        al_set_mouse_xy(jogo.window, mouse.mouseX, mouse.mouseY);
+        al_hide_mouse_cursor(jogo.window);
 
         //ligando timer
 
-        al_start_timer(timer);
-
-        //Liga o looping do jogo
-
-        bool windowOn = true;
-
-        //Cor do fundo
-
-        ALLEGRO_COLOR fundo;
-        fundo = al_map_rgb(0, 255, 255);
-
-        //Criando evento
-
-        ALLEGRO_EVENT event;
-
-        //
-        // Player, inimigos e "blocos" serão posicionados pela grid
-        // 
-        //--------------------------------------------------//
-        //                                                  //
-        //          Grid 15x10: 30 -> x e 20 -> y           //
-        //                                                  //
-        //          /--------------------------             //
-        //          | 1-1 | 2-1 |                           //
-        //          |-----|-----|                           //
-        //          | 1-2 | 2-2 |                           //
-        //          |-----|-----|                           //
-        //                                                  //
-        //--------------------------------------------------//
-        //
-
-        //Criando plataforma de nascimento dos robôs 1x3 || 1-1 | 1-2 | 1-3 ||
-
-        Platform nascimento;
-        nascimento.tipo = 4;
-        Platform* nascimentoP = &nascimento;
-
-        Platform plataforma;
-        plataforma.tipo = 0;
-        Platform* plataformaP = &plataforma;
-
-       /* Platform plataforma1;
-        plataforma1.tipo = 1;
-        Platform* plataforma1P = &plataforma1;*/
-
-        Platform plataforma2;
-        plataforma2.tipo = 2;
-        Platform* plataforma2P = &plataforma2;
-
-        Platform plataforma4;
-        plataforma4.tipo = 0;
-        Platform* plataforma4P = &plataforma4;
+        al_start_timer(jogo.timer);
 
-        Platform plataforma3;
-        plataforma3.tipo = 2;
-        Platform* plataforma3P = &plataforma3;
+        menuControl(ponteiroJogo, m);
 
-        nascimento = platform(lT, aT, 16, 17, 1, 1, nascimentoP, bitmapBlocos);
+        //bool windowOn = true;
 
-        plataforma = platform(lT, aT, 1, 18, 30, 3, plataformaP, bitmapBlocos);
+        ////looping de jogo principal
 
-        //plataforma1 = platform(lT, aT, 1, 1, 30, 17, plataforma1P, bitmapBlocos);
+        //while (windowOn == true) {
 
-        plataforma2 = platform(lT, aT, 11, 14, 5, 1, plataforma2P, bitmapBlocos);
+        //    //Limpando janela para cor do fundo
 
-        plataforma4 = platform(lT, aT, 21, 10, 5, 8, plataforma4P, bitmapBlocos);
+        //    al_clear_to_color(al_map_rgb(255, 255, 255));
+        //    
+        //    //Fazendo fila de eventos
 
-        plataforma3 = platform(lT, aT, 19, 11, 5, 7, plataforma3P, bitmapBlocos);
+        //    al_wait_for_event(jogo.eventQueue, &jogo.event);
 
-        //Iniciando array do jogador
+        //    //Chamando funtion de background/grid
+        //    
+        //    background(lT, aT);
+        //    
+        //    //Criando váriaveis para controle do sistema de vida
 
-        Player jogador[3];
-        int quantosPlayers = 3;
-        
-        for (int i = 0; i < quantosPlayers; i++) {
-            //                                coordenada na grid
-            //                                        |
-            //                                        V
-            jogador[i].x = ((larguraTela / 90) * 3) * 3 - ((larguraTela / 90) * 3);
-            jogador[i].y = ((alturaTela / 60) * 3) * 16 - ((alturaTela / 60) * 3);
-            jogador[i].largura = (larguraTela / 90) * 3;
-            jogador[i].altura = (alturaTela / 60) * 3;
-            jogador[i].velocidade = 6;
-            jogador[i].velY = 0;
-            jogador[i].standing = true;
-            jogador[i].active = false;
-            jogador[i].inUse = false;
-            jogador[i].used = false;
-            jogador[i].keyboard.a_pressed = false;
-            jogador[i].keyboard.d_pressed = false;
-            jogador[i].keyboard.w_pressed = false;
-            jogador[i].olhar = 1;
-            jogador[i].anima = 1;
-            jogador[i].quadro = 0;
-            jogador[i].player = bitmapPlayer;
-            jogador[i].gun = bitmapArmaRobo;
+        //    int playerAnterior = playerAtual;
 
+        //    playerSystem(jogador, quantosPlayers, pa, event);
 
-            if (i == 0) {
+        //    Player* p = &jogador[playerAtual];
 
-                jogador[i].active = true;
-                jogador[i].inUse = true;
-                jogador[i].x = nascimento.x + (nascimento.largura / 6 * 2);
-                jogador[i].y = nascimento.y - (jogador[0].altura * 2);
-            }
-            if (i == quantosPlayers - 1) {
-                jogador[i].active = true;
-                jogador[i].gun = bitmapArmaAgente;
-            }
-        }
+        //    //Chamando function playerMove, gun e shots
 
-        //Ponteiro para saber corpo ativo do player
+        //    playerMove(p, event);
+        //    gun(m, left_s, leftShotQuantos, right_s, rightShotQuantos, p, event);
+        //    shot(left_s, leftShotQuantos, right_s, rightShotQuantos, event);
 
-        int playerAtual = 0;
-        int* pa = &playerAtual;
+        //    enemieMove(e, event);
 
-        //Iniciando inimigo
+        //    //Atualizando colisão quando o timer atualiza
 
-        Enemie inimigo;
-        //                            coordenada na grid
-        //                                     |
-        //                                     V
-        inimigo.x = ((larguraTela / 90) * 3) * 7 - ((larguraTela / 90) * 3);
-        inimigo.y = ((alturaTela / 60) * 3) * 17 - ((alturaTela / 60) * 3);
-        inimigo.largura = (larguraTela / 90) * 3;
-        inimigo.altura = (alturaTela / 60) * 3;
-        inimigo.velocidade = 4.5;
-        inimigo.velY = 0;
-        inimigo.mudar = 0;
-        inimigo.inimigo = bitmapInimigos;
-        
+        //    if (event.type == ALLEGRO_EVENT_TIMER) {
 
-        //Ponteiro para chamar inimigo nas functions
+        //        p->standing = false;
 
-        Enemie* e = &inimigo;
+        //        plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataformaP);
+        //       // plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma1P);
+        //        plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma2P);
+        //        plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma3P);
+        //        plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma4P);
+        //        plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, nascimentoP);
+        //        enemieCollision(jogador, quantosPlayers, left_s, leftShotQuantos, right_s, rightShotQuantos, pa, e);
+        //        enemiePlatformCollision(nascimentoP, e);
+        //        enemiePlatformCollision(plataformaP, e);
+        //        enemiePlatformCollision(plataforma2P, e);
+        //        enemiePlatformCollision(plataforma3P, e);
+        //    }
 
-        //Iniciando váriavel do mouse
+        //    //Criando robôs do player na plataforma de nascimento
 
-        Mouse mouse;
+        //    if (playerAnterior != playerAtual) {
 
-        mouse.mouseX = larguraTela / 2;
-        mouse.mouseY = alturaTela / 2;
-        mouse.mouse.b_left = false;
-        mouse.mouse.b_right = false;
+        //        p = &jogador[playerAtual];
 
-        //Ponteiro para chamar mouse nas functions
+        //        if (playerAtual != quantosPlayers - 1) {
 
-        Mouse* m = &mouse;
+        //            p->x = nascimento.x + nascimento.largura / 2 - p->largura / 2;
 
-        //Iniciando array de tiros
+        //            p->y = nascimento.y - p->altura * 2;
+        //        }
+        //        
+        //    }
 
-        Shot leftShots[5];
-        int leftShotQuantos = 5;
+        //    //Desenhando plataformas
 
-        for (int i = 0; i < leftShotQuantos; i++) {
+        //    platformDraw(plataformaP, 30, 3);
+        //    //platformDraw(plataforma1P, 0, 0);
+        //    platformDraw(plataforma2P, 5, 4);
+        //    platformDraw(plataforma4P, 5, 8);
+        //    platformDraw(plataforma3P, 5, 7);
+        //    platformDraw(nascimentoP, 0, 0);
+        //    
+        //    //Chamando function playerDraw, gunDraw e enemieDraw
 
-            leftShots[i].leftActive = false;
-            leftShots[i].leftUsed = false;
-        }
+        //    playerDraw(jogador, quantosPlayers);
+        //    gunDraw(m, left_s, leftShotQuantos, right_s, rightShotQuantos, p);
+        //    enemieDraw(e);
 
-        Shot rightShots[5];
-        int rightShotQuantos = 5;
+        //    //Comando temporário para resetar tiros
 
-        for (int i = 0; i < rightShotQuantos; i++) {
+        //    if (event.type == ALLEGRO_EVENT_KEY_DOWN && event.keyboard.keycode == ALLEGRO_KEY_R) {
 
-            rightShots[i].rightActive = false;
-            rightShots[i].rightUsed = false;
-        }
+        //        for (int i = 0; i < leftShotQuantos; i++) {
 
-        //Ponteiro para tiros nas functions
+        //            leftShots[i].leftActive = false;
+        //            leftShots[i].leftUsed = false;
+        //        }
 
-        Shot* left_s = &leftShots[0];
-        Shot* right_s = &rightShots[0];
+        //        for (int i = 0; i < rightShotQuantos; i++) {
 
-        //Põe o muse no meio da tela
+        //            rightShots[i].rightActive = false;
+        //            rightShots[i].rightUsed = false;
+        //        }
+        //    }
 
-        al_set_mouse_xy(window, mouse.mouseX, mouse.mouseY);
-        al_hide_mouse_cursor(window);
+        //    //Para fechar janela do allegro com ESC ou no 'X' da janela
 
-        //looping de jogo principal
+        //    if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE || (event.type == ALLEGRO_EVENT_KEY_DOWN && event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)) {
+        //        windowOn = 0;
+        //    }
 
-        while (windowOn == true) {
+        //    //Trocando tela para fazer animação
 
-            //Limpando janela para cor do fundo
-
-            al_clear_to_color(fundo);
-            
-            //Fazendo fila de eventos
-
-            al_wait_for_event(eventQueue, &event);
-
-            //Chamando funtion de background/grid
-            
-            background(lT, aT);
-            
-            //Criando váriaveis para controle do sistema de vida
-
-            int playerAnterior = playerAtual;
-
-            playerSystem(jogador, quantosPlayers, pa, event);
-
-            Player* p = &jogador[playerAtual];
-
-            //Chamando function playerMove, gun e shots
-
-            playerMove(p, event);
-            gun(m, left_s, leftShotQuantos, right_s, rightShotQuantos, p, event);
-            shot(left_s, leftShotQuantos, right_s, rightShotQuantos, event);
-
-            enemieMove(e, event);
-
-            //Atualizando colisão quando o timer atualiza
-
-            if (event.type == ALLEGRO_EVENT_TIMER) {
-
-                p->standing = false;
-
-                plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataformaP);
-               // plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma1P);
-                plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma2P);
-                plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma3P);
-                plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, plataforma4P);
-                plataformCollision(p, left_s, leftShotQuantos, right_s, rightShotQuantos, nascimentoP);
-                enemieCollision(jogador, quantosPlayers, left_s, leftShotQuantos, right_s, rightShotQuantos, pa, e);
-                enemiePlatformCollision(nascimentoP, e);
-                enemiePlatformCollision(plataformaP, e);
-                enemiePlatformCollision(plataforma2P, e);
-                enemiePlatformCollision(plataforma3P, e);
-            }
-
-            //Criando robôs do player na plataforma de nascimento
-
-            if (playerAnterior != playerAtual) {
-
-                p = &jogador[playerAtual];
-
-                if (playerAtual != quantosPlayers - 1) {
-
-                    p->x = nascimento.x + nascimento.largura / 2 - p->largura / 2;
-
-                    p->y = nascimento.y - p->altura * 2;
-                }
-                
-            }
-
-            //Desenhando plataformas
-
-            platformDraw(plataformaP, 30, 3);
-            //platformDraw(plataforma1P, 0, 0);
-            platformDraw(plataforma2P, 5, 4);
-            platformDraw(plataforma4P, 5, 8);
-            platformDraw(plataforma3P, 5, 7);
-            platformDraw(nascimentoP, 0, 0);
-            
-            //Chamando function playerDraw, gunDraw e enemieDraw
-
-            playerDraw(jogador, quantosPlayers);
-            gunDraw(m, left_s, leftShotQuantos, right_s, rightShotQuantos, p);
-            enemieDraw(e);
-
-            //Comando temporário para resetar tiros
-
-            if (event.type == ALLEGRO_EVENT_KEY_DOWN && event.keyboard.keycode == ALLEGRO_KEY_R) {
-
-                for (int i = 0; i < leftShotQuantos; i++) {
-
-                    leftShots[i].leftActive = false;
-                    leftShots[i].leftUsed = false;
-                }
-
-                for (int i = 0; i < rightShotQuantos; i++) {
-
-                    rightShots[i].rightActive = false;
-                    rightShots[i].rightUsed = false;
-                }
-            }
-
-            //Para fechar janela do allegro com ESC ou no 'X' da janela
-
-            if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE || (event.type == ALLEGRO_EVENT_KEY_DOWN && event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)) {
-                windowOn = 0;
-            }
-
-            //Trocando tela para fazer animação
-
-            al_flip_display();
-        }
+        //    al_flip_display();
+        //}
 
         //Destruindo criações do allegro
 
-        al_destroy_timer(timer);
-        al_destroy_display(window);
-        al_destroy_event_queue(eventQueue);
-        al_destroy_bitmap(bitmapBlocos);
-        al_destroy_bitmap(bitmapInimigos);
-        al_destroy_bitmap(bitmapPlayer);
+        al_destroy_timer(jogo.timer);
+        al_destroy_display(jogo.window);
+        al_destroy_event_queue(jogo.eventQueue);
+        al_destroy_bitmap(jogo.bitmapBlocos);
+        al_destroy_bitmap(jogo.bitmapBackground);
+        al_destroy_bitmap(jogo.bitmapInimigos);
+        al_destroy_bitmap(jogo.bitmapPlayer);
+        al_destroy_bitmap(jogo.bitmapMenu);
         liberarAudio();
 
         return 0;

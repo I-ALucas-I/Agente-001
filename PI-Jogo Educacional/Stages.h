@@ -26,17 +26,7 @@
 #ifndef STAGES_H
 #define STAGES_H
 
-#include "Game.h"
-
-typedef enum {
-    MENU_INICIAL,
-    MENU_CONFIG,
-    MENU_FASES,
-    MENU_VITORIA,
-    MENU_PAUSE,
-    MENU_CODE,
-    MENU_DERROTA
-} Tela;
+#include "Starting.h"
 
 typedef enum {
     FASE_CONCLUIDA,
@@ -45,8 +35,6 @@ typedef enum {
     FASE_ABANDONADA
 } ResultadoFase;
 
-void menu(Jogo* jogo);
-
-ResultadoFase stage(Jogo* jogo, int fase, int subfase);
+void stage(Game* jogo, Mouse* m, int fase);
 
 #endif
